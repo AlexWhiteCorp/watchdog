@@ -1,5 +1,7 @@
 export const isWindows = () => process.platform === 'win32'
 
+export const isMac = () => process.platform === 'darwin'
+
 export const dateFormatted = (value) => {
     const date = new Date(value)
     return `${getDateValue(date.getHours())}:${getDateValue(date.getMinutes())} ${getDateValue(date.getDay())}.${getDateValue(date.getMonth())}.${date.getFullYear()}`
