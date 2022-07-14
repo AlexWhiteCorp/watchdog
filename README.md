@@ -13,7 +13,7 @@ npm install
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+npm run electron:serve
 ```
 ## Build
 
@@ -33,9 +33,4 @@ npm run electron:build:mac64
 - for *Windows x64* (build: `dist_electron/WatchDog Setup {version}.exe`)
 ```
 npm run electron:build:win64
-```
-
-### Lints and fixes files
-```
-npm run lint
 ```
