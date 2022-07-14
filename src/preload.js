@@ -23,8 +23,8 @@ window.loadConfigs = (callback) => {
     });
 }
 
-window.setSize = (windowId, width, height) => {
-    ipcRenderer.send('resize-window', [windowId, width, height])
+window.setSize = (width, height) => {
+    ipcRenderer.send('resize-window', [width, height])
 }
 
 window.hideWindow = () => {

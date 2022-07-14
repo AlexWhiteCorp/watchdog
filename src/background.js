@@ -47,12 +47,12 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
-app.dock.hide()
-
 ipcMain.on('resize-window', (event, args) => {
   console.log('Resize: ' + args)
+  const [width, height] = args
   if(window) {
-    window.setSize(Math.round(args[1]), Math.round(args[2]))
+    platform.resizeWindow(width, height)
+    TrayWindow.alignWindow()
   }
 })
 
