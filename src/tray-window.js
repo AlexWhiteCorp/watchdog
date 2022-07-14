@@ -2,8 +2,8 @@ const electron = require("electron")
 
 const { ipcMain, Tray } = electron
 
-const TOP_RIGHT = 1
-const BOTTOM_RIGHT = 2
+const TOP_RIGHT = 'TOP_RIGHT'
+const BOTTOM_RIGHT = 'BOTTOM_RIGHT'
 
 let tray = undefined
 let window = undefined
@@ -39,6 +39,7 @@ const init = (options) => {
     alignWindow()
 
     ipcMain.emit("tray-window-ready", { window: window, tray: tray })
+    window.webContents.send('tray-position', getTrayPosition())
 }
 
 const createTray = (trayIconPath) => {
@@ -68,14 +69,20 @@ const alignWindow = () => {
     })
 }
 
-const calculateWindowPosition = () => {
+const getTrayPosition = () => {
+    const trayBounds = tray.getBounds()
     const screenBounds = electron.screen.getPrimaryDisplay().size
+
+    return trayBounds.y > screenBounds.height / 2
+        ? BOTTOM_RIGHT
+        : TOP_RIGHT
+}
+
+const calculateWindowPosition = () => {
     const trayBounds = tray.getBounds()
     const [width, height] = window.getSize()
 
-    const trayPos = trayBounds.y > screenBounds.height / 2
-        ? BOTTOM_RIGHT
-        : TOP_RIGHT
+    const trayPos = getTrayPosition()
 
     let x, y
 

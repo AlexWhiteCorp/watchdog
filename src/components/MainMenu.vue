@@ -1,5 +1,6 @@
 <template>
-  <div id="app" class="main-wrapper" ref="app" @click="hideMenu">
+  <div id="app" class="main-wrapper" :class="winPossRelatedStyles"
+       ref="app" @click="hideMenu">
     <div class="main-menu">
       <menu-header></menu-header>
 
@@ -47,6 +48,15 @@ export default {
     'menu-navbar': MenuNavbar,
     'organization-page': OrganizationPage,
     'menu-delimiter': MenuDelimiter
+  },
+  computed: {
+    winPossRelatedStyles() {
+      if(window.isTrayBottom()) {
+        return 'window-position-bottom'
+      }
+
+      return ''
+    }
   },
   methods: {
     onOrgChange: function (currOrg) {
@@ -114,7 +124,7 @@ export default {
     },
     resizeWindow: function () {
       const bounds = this.$el.getBoundingClientRect()
-      window.setSize(bounds.width, Math.max(bounds.height, 500))
+      window.setSize(bounds.width, bounds.height, 500)
     },
     updateAppIconStatus: function () {
       if (!this.organizations || !this.organizations.length) {
@@ -154,6 +164,11 @@ export default {
   grid-template-columns: 350px auto;
   grid-template-rows: max-content;
   grid-template-areas: "repo-info main-menu";
+}
+
+.window-position-bottom {
+  grid-template-rows: auto max-content;
+  grid-template-areas: ". ." "repo-info main-menu";
 }
 
 .main-menu {
