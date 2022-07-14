@@ -3,14 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
+    "electron:serve": "vue-cli-service electron:serve",
     "electron:build": "vue-cli-service electron:build",
     "electron:build:mac-arm": "vue-cli-service electron:build --mac --arm64",
     "electron:build:mac64": "vue-cli-service electron:build --mac --x64",
     "electron:build:win64": "vue-cli-service electron:build --win --x64",
-    "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
