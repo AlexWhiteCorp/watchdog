@@ -5,14 +5,22 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import TrayWindow from "@/tray-window";
 import * as path from "path";
-import {isWindows} from "@/utils";
+import {isMac, isWindows} from "@/utils";
+import WindowsPlatform from "@/platform/WindowsPlatform";
+import MacOSPlatform from "@/platform/MacOSPlatform";
 
+const APP_NAME = 'WatchDog'
 const TRAY_ICON_BLACK_PATH = path.join(__static, 'icons/logo_black@2x.png')
 const TRAY_ICON_BLUE_PATH = path.join(__static, 'icons/logo_blue@2x.png')
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 let window
+let platform = isWindows()
+    ? new WindowsPlatform()
+    : isMac()
+        ? new MacOSPlatform()
+        : null
 
 async function createWindow() {
   const window = new BrowserWindow({
@@ -21,7 +29,7 @@ async function createWindow() {
     roundedCorners: false,
     transparent: true,
     resizable: false,
-    minHeight: 500,
+    show: false,
     webPreferences: {
       devTools: isDevelopment,
       nodeIntegration: true,
@@ -30,7 +38,6 @@ async function createWindow() {
     }
   })
   //window.webContents.openDevTools()
-  window.hide()
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     await window.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
@@ -42,7 +49,6 @@ async function createWindow() {
   return window;
 }
 
-// Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
@@ -58,11 +64,7 @@ ipcMain.on('resize-window', (event, args) => {
 
 ipcMain.on('hide-window', () => {
   console.log('Hide window')
-  window.hide();
-  if(isWindows()) {
-    window.minimize();
-  }
-  app.hide()
+  platform.hideWindow()
 })
 
 ipcMain.on('console-log', (event, args) => {
@@ -70,12 +72,12 @@ ipcMain.on('console-log', (event, args) => {
 })
 
 ipcMain.on('show-notification', (event, args) => {
-  console.log('Notification: ' + args)
+  const [subtitle, body] = args
   new Notification({
-    title: 'WatchDog',
-    subtitle: args[0],
-    body: args[1]}
-  ).show()
+    title: APP_NAME,
+    subtitle: subtitle,
+    body: body
+  }).show()
 })
 
 ipcMain.on('set-app-icon', (event, color) => {
@@ -89,22 +91,7 @@ ipcMain.on('set-app-icon', (event, color) => {
 })
 
 ipcMain.on('quit-app', () => {
-  app.exit(0)
-})
-
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  platform.quitApp()
 })
 
 app.on('ready', async () => {
@@ -117,10 +104,16 @@ app.on('ready', async () => {
   }
 
   window = await createWindow()
+  platform.setWindow(window)
+  platform.hideWindow()
+
   TrayWindow.init({
     trayIconPath: TRAY_ICON_BLACK_PATH,
-    window: window
+    window: window,
+    platform: platform
   })
+
+  window.webContents.send("window-loaded", { loaded: true });
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -128,12 +121,12 @@ if (isDevelopment) {
   if (isWindows()) {
     process.on('message', (data) => {
       if (data === 'graceful-exit') {
-        app.quit()
+        platform.quitApp()
       }
     })
   } else {
     process.on('SIGTERM', () => {
-      app.quit()
+      platform.quitApp()
     })
   }
 }
