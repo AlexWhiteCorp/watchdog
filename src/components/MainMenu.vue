@@ -114,7 +114,7 @@ export default {
     },
     resizeWindow: function () {
       const bounds = this.$el.getBoundingClientRect()
-      window.setSize(0, bounds.width, Math.max(bounds.height, 500))
+      window.setSize(bounds.width, Math.max(bounds.height, 500))
     },
     updateAppIconStatus: function () {
       if (!this.organizations || !this.organizations.length) {
