@@ -41,7 +41,7 @@ export default {
       organizations: [],
       currOrg: null,
       errMsg: null,
-      trayPosition: isWindows ? 'BOTTOM_RIGHT' : (isMac() ? 'TOP_RIGHT' : null)
+      trayPosition: isWindows() ? 'BOTTOM_RIGHT' : (isMac() ? 'TOP_RIGHT' : null)
     }
   },
   components: {
@@ -72,7 +72,6 @@ export default {
       const organizations = await Promise.all(
           config.organizations.map(async (orgInfo) => {
             const githubService = await this.getGHService(orgInfo)
-            console.log(githubService.authUser)
             if (githubService.authUser) {
               const repos = await Promise.all(
                   orgInfo.groups.map(reposGroup =>
@@ -150,13 +149,16 @@ export default {
     }
   },
   updated() {
+    window.log('[MainMenu]: Updated')
     this.resizeWindow()
   },
   mounted() {
-    window.getTrayPosition()
-        .then(pos => {
-          this.trayPosition = pos
-        })
+    setTimeout(() => {
+      window.getTrayPosition()
+          .then(pos => {
+            this.trayPosition = pos
+          })
+    }, 200)
 
     window.loadConfigs((err, data) => {
       if (!err) {
