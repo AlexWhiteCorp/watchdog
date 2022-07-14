@@ -5,9 +5,10 @@
       <menu-header></menu-header>
 
       <template v-if="organizations && organizations.length">
-        <menu-navbar :organizations="organizations" :onOrgChange="onOrgChange"></menu-navbar>
+        <menu-navbar v-if="!isBottomPosition()" :organizations="organizations" :onOrgChange="onOrgChange"></menu-navbar>
         <menu-delimiter></menu-delimiter>
         <organization-page v-if="currOrg && !currOrg.credsError" :org="currOrg"></organization-page>
+        <menu-navbar v-if="isBottomPosition()" :organizations="organizations" :onOrgChange="onOrgChange"></menu-navbar>
       </template>
 
       <menu-item v-else-if="!errMsg" class="menu-item-default">Loading info...</menu-item>
@@ -143,6 +144,9 @@ export default {
     quit: function () {
       window.quitApp()
     },
+    isBottomPosition: function () {
+      return window.isTrayBottom()
+    }
   },
   updated() {
     this.resizeWindow()

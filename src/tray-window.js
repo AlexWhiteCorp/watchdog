@@ -39,7 +39,9 @@ const init = (options) => {
     alignWindow()
 
     ipcMain.emit("tray-window-ready", { window: window, tray: tray })
-    window.webContents.send('tray-position', getTrayPosition())
+    ipcMain.handle('get-tray-position', () => {
+        return getTrayPosition()
+    })
 }
 
 const createTray = (trayIconPath) => {

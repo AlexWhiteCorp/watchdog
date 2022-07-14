@@ -7,11 +7,12 @@ const CONFIGS_FILE_PATH = os.homedir() + '/.watchdog/config.json'
 let trayPosition
 
 ipcRenderer.on('tray-position', (event, pos) => {
+    console.log(pos)
     trayPosition = pos
 })
 
 window.isTrayBottom = () => {
-    return trayPosition === 'BOTTOM_RIGHT'
+    return ipcRenderer.invoke('get-tray-position') === 'BOTTOM_RIGHT'
 }
 
 window.log = (msg) => {
