@@ -30,7 +30,7 @@ import OrganizationPage from "@/components/OrganizationPage";
 import MenuDelimiter from "@/components/MenuDelimiter";
 import MenuNavbar from "@/components/MenuNavbar";
 import GitHubService from "@/services/GitHubService";
-import {isAllApproved} from "@/utils";
+import {isAllApproved, isMac, isWindows} from "@/utils";
 
 const services = {}
 
@@ -41,7 +41,7 @@ export default {
       organizations: [],
       currOrg: null,
       errMsg: null,
-      trayPosition: null
+      trayPosition: isWindows ? 'BOTTOM_RIGHT' : (isMac() ? 'TOP_RIGHT' : null)
     }
   },
   components: {
