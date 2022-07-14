@@ -9,10 +9,7 @@ let tray = undefined
 let window = undefined
 let platform = undefined
 
-const margin = {
-    x: -350,
-    y: 0
-}
+let margin
 
 const init = (options) => {
     createTray(options.trayIconPath)
@@ -20,6 +17,8 @@ const init = (options) => {
     platform = options.platform
 
     platform.hideWindow()
+
+    margin = platform.getMargin()
 
     tray.on("click", () => {
         ipcMain.emit("tray-window-clicked", { window: window, tray: tray })

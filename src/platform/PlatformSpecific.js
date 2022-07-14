@@ -1,5 +1,10 @@
 import {app} from "electron";
 
+const margin = {
+    x: -350,
+    y: 0
+}
+
 class PlatformSpecific {
 
     setWindow(window) {
@@ -22,6 +27,10 @@ class PlatformSpecific {
         if(this.window) {
             this.window.setSize(Math.round(width), Math.round(height))
         }
+    }
+
+    getMargin() {
+        return margin
     }
 
     quitApp() {

@@ -30,6 +30,8 @@ async function createWindow() {
     transparent: true,
     resizable: false,
     show: false,
+    width: 700,
+    height: 500,
     webPreferences: {
       devTools: isDevelopment,
       nodeIntegration: true,

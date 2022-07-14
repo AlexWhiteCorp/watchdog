@@ -4,15 +4,8 @@ import * as os from "os";
 
 const CONFIGS_FILE_PATH = os.homedir() + '/.watchdog/config.json'
 
-let trayPosition
-
-ipcRenderer.on('tray-position', (event, pos) => {
-    console.log(pos)
-    trayPosition = pos
-})
-
-window.isTrayBottom = () => {
-    return ipcRenderer.invoke('get-tray-position') === 'BOTTOM_RIGHT'
+window.getTrayPosition = async () => {
+    return await ipcRenderer.invoke('get-tray-position')
 }
 
 window.log = (msg) => {

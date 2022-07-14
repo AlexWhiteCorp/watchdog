@@ -40,7 +40,8 @@ export default {
     return {
       organizations: [],
       currOrg: null,
-      errMsg: null
+      errMsg: null,
+      trayPosition: null
     }
   },
   components: {
@@ -52,7 +53,7 @@ export default {
   },
   computed: {
     winPossRelatedStyles() {
-      if(window.isTrayBottom()) {
+      if(this.isBottomPosition()) {
         return 'window-position-bottom'
       }
 
@@ -60,6 +61,9 @@ export default {
     }
   },
   methods: {
+    isBottomPosition: function () {
+      return this.trayPosition === 'BOTTOM_RIGHT'
+    },
     onOrgChange: function (currOrg) {
       this.currOrg = currOrg
       this.resizeWindow()
@@ -143,15 +147,17 @@ export default {
     },
     quit: function () {
       window.quitApp()
-    },
-    isBottomPosition: function () {
-      return window.isTrayBottom()
     }
   },
   updated() {
     this.resizeWindow()
   },
   mounted() {
+    window.getTrayPosition()
+        .then(pos => {
+          this.trayPosition = pos
+        })
+
     window.loadConfigs((err, data) => {
       if (!err) {
         this.loadReposInfo(data)
