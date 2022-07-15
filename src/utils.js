@@ -4,15 +4,10 @@ export const isMac = () => process.platform === 'darwin'
 
 export const dateFormatted = (value) => {
     const date = new Date(value)
-    return `${getDateValue(date.getHours())}:${getDateValue(date.getMinutes())} ${getDateValue(date.getDay())}.${getDateValue(date.getMonth())}.${date.getFullYear()}`
-}
+    const localTime = date.toLocaleTimeString()
+    const localDate = date.toLocaleDateString().replaceAll('/', '.')
 
-const getDateValue = (value) => {
-    if(value < 10) {
-        return '0' + value
-    }
-
-    return value
+    return `${localTime} ${localDate}`
 }
 
 export const isAllApproved = (organizations) => {
