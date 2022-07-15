@@ -145,7 +145,7 @@ export default {
       window.hideWindow()
     },
     quit: function (e) {
-      e.preventDefault()
+      e.stopPropagation()
       window.quitApp()
     }
   },
