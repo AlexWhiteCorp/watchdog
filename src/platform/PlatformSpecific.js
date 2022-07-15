@@ -17,10 +17,20 @@ class PlatformSpecific {
         }
     }
 
+    onBlurWindow() {}
+
     showWindow() {
         if(this.window) {
             this.window.show()
         }
+    }
+
+    isWindowOpened() {
+        if(this.window) {
+            return this.window.isVisible()
+        }
+
+        return false
     }
 
     resizeWindow(width, height) {

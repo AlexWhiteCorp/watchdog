@@ -21,13 +21,16 @@ const init = (options) => {
     margin = platform.getMargin()
 
     tray.on("click", () => {
-        ipcMain.emit("tray-window-clicked", { window: window, tray: tray })
-        toggleWindow()
+        if (platform.isWindowOpened()) {
+            platform.hideWindow()
+            return
+        }
+
+        platform.showWindow()
     })
 
     window.on("blur", () => {
-        platform.hideWindow()
-        ipcMain.emit("tray-window-hidden", { window: window, tray: tray })
+        platform.onBlurWindow()
     })
 
     window.on("close", function(event) {
@@ -49,17 +52,6 @@ const createTray = (trayIconPath) => {
 
 const getTray = () => {
     return tray
-}
-
-const toggleWindow = () => {
-    if (window.isVisible()) {
-        platform.hideWindow()
-        ipcMain.emit("tray-window-hidden", { window: window, tray: tray })
-        return
-    }
-
-    platform.showWindow()
-    ipcMain.emit("tray-window-visible", { window: window, tray: tray })
 }
 
 const alignWindow = () => {

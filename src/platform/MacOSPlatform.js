@@ -15,6 +15,9 @@ class MacOSPlatform extends PlatformSpecific {
         }
     }
 
+    onBlurWindow() {
+        this.hideWindow()
+    }
 }
 
 export default MacOSPlatform

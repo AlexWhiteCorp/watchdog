@@ -65,7 +65,6 @@ ipcMain.on('resize-window', (event, args) => {
 })
 
 ipcMain.on('hide-window', () => {
-  console.log('Hide window')
   platform.hideWindow()
 })
 
