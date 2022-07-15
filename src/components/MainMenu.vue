@@ -144,7 +144,8 @@ export default {
     hideMenu: function () {
       window.hideWindow()
     },
-    quit: function () {
+    quit: function (e) {
+      e.preventDefault()
       window.quitApp()
     }
   },
