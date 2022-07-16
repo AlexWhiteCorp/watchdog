@@ -1,0 +1,83 @@
+name: Create release
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build_release:
+    name: build_release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Build for MacOS ARM
+        run: |
+          npm run electron:build:mac-arm
+
+      - name: Build for MacOS x64
+        run: |
+          npm run electron:build:mac64
+
+      - name: Build for Windows x64
+        run: |
+          npm run electron:build:win64
+
+      - name: Get release version
+        id: release-version
+        uses: martinbeentjes/npm-get-version-action@main
+
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create-release
+        with:
+          draft: false
+          prerelease: false
+          release_name: Release ${{ steps.package-version.outputs.current-version}}
+          tag_name: ${{ github.ref }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Upload MacOS ARM artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./dist_electron/WatchDog-${{ steps.create-release.outputs.upload_url }}-arm64.dmg
+          asset_name: WatchDog-${{ steps.create-release.outputs.upload_url }}-arm.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Upload MacOS x64 artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist_electron/WatchDog-${{ steps.create-release.outputs.upload_url }}.dmg
+          asset_name: WatchDog-${{ steps.create-release.outputs.upload_url }}-64.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows x64 artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist_electron/WatchDog Setup {version}.exe
+          asset_name: WatchDog ${{ steps.create-release.outputs.upload_url }}.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
