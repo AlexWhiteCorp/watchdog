@@ -43,14 +43,12 @@ jobs:
           npm run electron:build:win64
 
       - name: Create release
-        uses: actions/create-release@v1
+        uses: ncipollo/release-action@v1
         id: create-release
         with:
-          draft: false
-          prerelease: false
-          release_name: Release ${{ steps.release-version.outputs.version }}
-          tag_name: ${{ github.ref }}
-          body_path: CHANGELOG.md
+          name: Release ${{ steps.release-version.outputs.version }}
+          bodyFile: CHANGELOG.md
+          artifacts: "release.tar.gz,foo/*.txt"
           token: ${{ github.GITHUB_TOKEN }}
 
       - name: Upload MacOS ARM artifact
