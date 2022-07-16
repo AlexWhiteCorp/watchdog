@@ -5,9 +5,9 @@
   "scripts": {
     "electron:serve": "vue-cli-service electron:serve",
     "electron:build": "vue-cli-service electron:build",
-    "electron:build:mac-arm": "vue-cli-service electron:build --mac --arm64",
-    "electron:build:mac64": "vue-cli-service electron:build --mac --x64",
-    "electron:build:win64": "vue-cli-service electron:build --win --x64",
+    "electron:build:mac-arm": "vue-cli-service electron:build --mac --arm64 --publish=never",
+    "electron:build:mac64": "vue-cli-service electron:build --mac --x64 --publish=never",
+    "electron:build:win64": "vue-cli-service electron:build --win --x64 --publish=never",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
