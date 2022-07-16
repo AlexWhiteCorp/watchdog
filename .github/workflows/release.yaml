@@ -26,6 +26,22 @@ jobs:
           export VERSION=$(node --eval="process.stdout.write(require('./package.json').version)")
           echo "::set-output name=version::$VERSION"
 
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Build for MacOS ARM
+        run: |
+          npm run electron:build:mac-arm
+
+      - name: Build for MacOS x64
+        run: |
+          npm run electron:build:mac64
+
+      - name: Build for Windows x64
+        run: |
+          npm run electron:build:win64
+
       - name: Set tag
         run: |
           git tag ${{ steps.release-version.outputs.version }}
@@ -42,19 +58,3 @@ jobs:
             dist_electron/WatchDog-${{ steps.release-version.outputs.version }}-arm64.dmg
             dist_electron/WatchDog-${{ steps.release-version.outputs.version }}.dmg
             dist_electron/WatchDog Setup ${{ steps.release-version.outputs.version }}.exe
-
-      - name: Install dependencies
-        run: |
-          npm install
-
-      - name: Build for MacOS ARM
-        run: |
-          npm run electron:build:mac-arm
-
-      - name: Build for MacOS x64
-        run: |
-          npm run electron:build:mac64
-
-      - name: Build for Windows x64
-        run: |
-          npm run electron:build:win64
