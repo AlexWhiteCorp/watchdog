@@ -30,6 +30,11 @@ jobs:
         run: |
           npm install
 
+      - name: Build for Windows x64
+        run: |
+          npm run electron:build:win64
+          mv 'dist_electron/WatchDog Setup ${{ steps.release-version.outputs.version }}.exe' dist_electron/WatchDog-${{ steps.release-version.outputs.version }}.exe
+
       - name: Build for MacOS ARM
         run: |
           npm run electron:build:mac-arm
@@ -37,11 +42,6 @@ jobs:
       - name: Build for MacOS x64
         run: |
           npm run electron:build:mac64
-
-      - name: Build for Windows x64
-        run: |
-          npm run electron:build:win64
-          mv dist_electron/WatchDog Setup ${{ steps.release-version.outputs.version }}.exe dist_electron/WatchDog-${{ steps.release-version.outputs.version }}.exe
 
       - name: Set tag
         run: |
