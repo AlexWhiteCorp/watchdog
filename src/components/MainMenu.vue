@@ -114,9 +114,6 @@ export default {
           const authUser = await githubService.getSelfUser()
           githubService.authUser = authUser
 
-          githubService.addPRFilter((pr) => pr.title.indexOf('Bump') === -1)
-          githubService.addPRFilter((pr) => !pr.draft)
-          githubService.addPRFilter((pr) => pr.isOwner(authUser.login) || pr.isReviewer(authUser.login))
         } catch (e) {
           githubService.authUser = null
         }

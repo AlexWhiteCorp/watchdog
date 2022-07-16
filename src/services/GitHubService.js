@@ -2,25 +2,10 @@ import GitHubClient from "@/clients/GitHubClient";
 
 class GitHubService {
 
-    prFilters = []
     authUser
 
     constructor(authToken) {
         this.client = new GitHubClient(authToken);
-    }
-
-    addPRFilter(filter) {
-        this.prFilters.push(filter);
-    }
-
-    filterPR(pr) {
-        for (const prFilter of this.prFilters) {
-            if(!prFilter(pr)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     getSelfUser() {
@@ -49,9 +34,14 @@ class GitHubService {
         return this.client.getRepoPRs(repo.getOwner(), repo.getName())
             .then(async (prs) => {
                 repo.pullRequests = await Promise.all(
-                    prs.map(pr => this.#fetchPR(repo, pr))
+                    prs
+                        .filter(pr => pr.title.indexOf('Bump') === -1)
+                        .map(pr => this.#fetchPR(repo, pr))
+
                 )
-                repo.pullRequests = repo.pullRequests.filter(pr => this.filterPR(pr))
+                repo.pullRequests = repo.pullRequests
+                    .filter(pr => !pr.draft)
+                    .filter(pr => pr.isOwner(this.authUser.login) || pr.isReviewer(this.authUser.login))
                 return repo
             })
     }
@@ -59,6 +49,14 @@ class GitHubService {
     #fetchPR(repo, pr) {
         return this.client.getPullRequest(repo.getOwner(), repo.getName(), pr.number)
             .then(pr => {
+                if(pr.draft) {
+                    return pr
+                }
+
+                if(!pr.isOwner(this.authUser.login) && !pr.isReviewer(this.authUser.login)) {
+                    return pr
+                }
+
                 return this.client.getPullRequestReviews(repo.getOwner(), repo.getName(), pr.number)
                     .then(reviewers => {
                         pr.reviewers = reviewers
