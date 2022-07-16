@@ -26,6 +26,18 @@ jobs:
           export VERSION=$(node --eval="process.stdout.write(require('./package.json').version)")
           echo "::set-output name=version::$VERSION"
 
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        id: create-release
+        with:
+          name: Release ${{ steps.release-version.outputs.version }}
+          body_path: CHANGELOG.md
+          token: ${{ secrets.GH_TOKEN }}
+          files: |
+            dist_electron/WatchDog-${{ steps.release-version.outputs.version }}-arm64.dmg
+            dist_electron/WatchDog-${{ steps.release-version.outputs.version }}.dmg
+            dist_electron/WatchDog Setup ${{ steps.release-version.outputs.version }}.exe
+
       - name: Install dependencies
         run: |
           npm install
@@ -41,41 +53,3 @@ jobs:
       - name: Build for Windows x64
         run: |
           npm run electron:build:win64
-
-      - name: Create release
-        uses: ncipollo/release-action@v1
-        id: create-release
-        with:
-          name: Release ${{ steps.release-version.outputs.version }}
-          bodyFile: CHANGELOG.md
-          token: ${{ github.GITHUB_TOKEN }}
-
-      - name: Upload MacOS ARM artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ./dist_electron/WatchDog-${{ steps.release-version.outputs.version }}-arm64.dmg
-          asset_name: WatchDog-${{ steps.release-version.outputs.version }}-arm.dmg
-          asset_content_type: application/octet-stream
-
-      - name: Upload MacOS x64 artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist_electron/WatchDog-${{ steps.release-version.outputs.version }}.dmg
-          asset_name: WatchDog-${{ steps.release-version.outputs.version }}-64.dmg
-          asset_content_type: application/octet-stream
-
-      - name: Upload Windows x64 artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist_electron/WatchDog Setup ${{ steps.release-version.outputs.version }}.exe
-          asset_name: WatchDog ${{ steps.release-version.outputs.version }}.exe
-          asset_content_type: application/vnd.microsoft.portable-executable
