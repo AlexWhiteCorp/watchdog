@@ -26,7 +26,7 @@ jobs:
       - name: Get release version
         id: release-version
         run: |
-          EXPORT VERSION = $(node --eval="process.stdout.write(require('./package.json').version)")
+          export VERSION = $(node --eval="process.stdout.write(require('./package.json').version)")
           echo "::set-output name=version::$VERSION"
 
       - name: Install dependencies
