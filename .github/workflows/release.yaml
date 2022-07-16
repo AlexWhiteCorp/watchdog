@@ -1,0 +1,61 @@
+name: Create release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  create_release:
+    name: Create Release
+    runs-on: macos-10.15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Get release version
+        id: release-version
+        run: |
+          export VERSION=$(node --eval="process.stdout.write(require('./package.json').version)")
+          echo "::set-output name=version::$VERSION"
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Build for Windows x64
+        run: |
+          npm run electron:build:win64
+          mv 'dist_electron/WatchDog Setup ${{ steps.release-version.outputs.version }}.exe' dist_electron/WatchDog-${{ steps.release-version.outputs.version }}.exe
+
+      - name: Build for MacOS ARM
+        run: |
+          npm run electron:build:mac-arm
+
+      - name: Build for MacOS x64
+        run: |
+          npm run electron:build:mac64
+
+      - name: Set tag
+        run: |
+          git tag ${{ steps.release-version.outputs.version }}
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        id: create-release
+        with:
+          name: Release ${{ steps.release-version.outputs.version }}
+          tag_name: ${{ steps.release-version.outputs.version }}
+          body_path: CHANGELOG.md
+          token: ${{ secrets.GH_TOKEN }}
+          fail_on_unmatched_files: true
+          files: |
+            dist_electron/WatchDog-${{ steps.release-version.outputs.version }}-arm64.dmg
+            dist_electron/WatchDog-${{ steps.release-version.outputs.version }}.dmg
+            dist_electron/WatchDog-${{ steps.release-version.outputs.version }}.exe

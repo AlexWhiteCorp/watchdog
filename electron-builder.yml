@@ -1,0 +1,4 @@
+appId: com.alexcorp.watchdog2
+productName: WatchDog
+mac:
+  category: public.app-category.developer-tools
