@@ -50,12 +50,12 @@ jobs:
           tag_name: ${{ github.ref }}
           body_path: CHANGELOG.md
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.ACCESS_TOKEN }}
 
       - name: Upload MacOS ARM artifact
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./dist_electron/WatchDog-${{ steps.create-release.outputs.upload_url }}-arm64.dmg
@@ -65,7 +65,7 @@ jobs:
       - name: Upload MacOS x64 artifact
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./dist_electron/WatchDog-${{ steps.create-release.outputs.upload_url }}.dmg
@@ -75,7 +75,7 @@ jobs:
       - name: Upload Windows x64 artifact
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./dist_electron/WatchDog Setup {version}.exe
