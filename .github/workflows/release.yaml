@@ -48,7 +48,6 @@ jobs:
         with:
           name: Release ${{ steps.release-version.outputs.version }}
           bodyFile: CHANGELOG.md
-          artifacts: "release.tar.gz,foo/*.txt"
           token: ${{ github.GITHUB_TOKEN }}
 
       - name: Upload MacOS ARM artifact
