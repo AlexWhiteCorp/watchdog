@@ -8,10 +8,13 @@ import * as path from "path";
 import {isMac, isWindows} from "@/utils";
 import WindowsPlatform from "@/platform/WindowsPlatform";
 import MacOSPlatform from "@/platform/MacOSPlatform";
+import log from "electron-log";
 
 const APP_NAME = 'WatchDog'
 const TRAY_ICON_BLACK_PATH = path.join(__static, 'icons/logo_black@2x.png')
 const TRAY_ICON_BLUE_PATH = path.join(__static, 'icons/logo_blue@2x.png')
+
+log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] {level} {text}'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -70,6 +73,14 @@ ipcMain.on('hide-window', () => {
 
 ipcMain.on('console-log', (event, args) => {
   console.log(args)
+})
+
+ipcMain.on('log-debug', (event, args) => {
+  log.debug(`[${args[0]}]: ${JSON.stringify(args[1])}`)
+})
+
+ipcMain.on( 'log-info', (event, args) => {
+  log.info(`[${args[0]}]: ${JSON.stringify(args[1])}`)
 })
 
 ipcMain.on('show-notification', (event, args) => {

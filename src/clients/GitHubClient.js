@@ -14,6 +14,16 @@ class GitHubClient {
             timeout: 10000,
             adapter: require('axios/lib/adapters/http')
         })
+
+        this.api.interceptors.request.use(
+            (config) => {
+                const method = config.method.toUpperCase()
+                const path = config.url
+                window.logger.debug(GitHubClient.name, `${method} ${path}`)
+                return config;
+        }, (error) => {
+                return Promise.reject(error);
+        });
     }
 
     getSelfUser() {

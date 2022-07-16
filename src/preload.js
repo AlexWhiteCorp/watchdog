@@ -8,6 +8,15 @@ window.getTrayPosition = async () => {
     return await ipcRenderer.invoke('get-tray-position')
 }
 
+window.logger = {
+    debug: (source, msg) => {
+        ipcRenderer.send('log-debug', [source, msg])
+    },
+    info: (source, msg) => {
+        ipcRenderer.send('log-info', [source, msg])
+    },
+}
+
 window.log = (msg) => {
     ipcRenderer.send('console-log', msg)
 }
