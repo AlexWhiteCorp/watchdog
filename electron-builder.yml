@@ -2,4 +2,3 @@ appId: com.alexcorp.watchdog2
 productName: WatchDog
 mac:
   category: public.app-category.developer-tools
-  bundleVersion: 0.1.1
