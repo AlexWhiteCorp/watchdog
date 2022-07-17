@@ -4,9 +4,7 @@ import * as os from "os";
 
 const CONFIGS_FILE_PATH = os.homedir() + '/.watchdog/config.json'
 
-window.getTrayPosition = async () => {
-    return await ipcRenderer.invoke('get-tray-position')
-}
+window.appVersion = require('../package.json').version
 
 window.logger = {
     debug: (source, msg) => {
@@ -15,6 +13,10 @@ window.logger = {
     info: (source, msg) => {
         ipcRenderer.send('log-info', [source, msg])
     },
+}
+
+window.getTrayPosition = async () => {
+    return await ipcRenderer.invoke('get-tray-position')
 }
 
 window.log = (msg) => {
