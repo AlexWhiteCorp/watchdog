@@ -73,6 +73,7 @@ const getTrayPosition = () => {
 
 const calculateWindowPosition = () => {
     const trayBounds = tray.getBounds()
+    const displayBounds = electron.screen.getPrimaryDisplay().size
     const [width, height] = window.getSize()
 
     const trayPos = getTrayPosition()
@@ -89,6 +90,10 @@ const calculateWindowPosition = () => {
             x = Math.floor(trayBounds.x + trayBounds.width / 2  + margin.x)
             y = Math.floor(trayBounds.y - height - trayBounds.height / 2 + margin.y)
             break
+    }
+
+    if(x + width > displayBounds.width) {
+        x = displayBounds.width - width
     }
 
     return { x: x, y: y }
