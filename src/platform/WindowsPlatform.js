@@ -21,7 +21,7 @@ class WindowsPlatform extends PlatformSpecific {
             if(this.window) {
                 this.window.show()
             }
-        }, 500)
+        }, 350)
     }
 
 
