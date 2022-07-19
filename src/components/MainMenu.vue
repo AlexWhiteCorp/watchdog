@@ -2,7 +2,7 @@
   <div id="app" class="main-wrapper" :class="winPossRelatedStyles"
        ref="app" @click="hideMenu">
     <div class="main-menu">
-      <menu-header></menu-header>
+      <menu-header :onRefreshed="onRefreshed"></menu-header>
 
       <template v-if="organizations && organizations.length">
         <menu-navbar v-if="!isBottomPosition()"
@@ -37,8 +37,7 @@ import MenuItem from "@/components/MenuItem";
 import OrganizationPage from "@/components/OrganizationPage";
 import MenuDelimiter from "@/components/MenuDelimiter";
 import MenuNavbar from "@/components/MenuNavbar";
-import GitHubService from "@/services/GitHubService";
-import {isAllApproved, isMac, isWindows} from "@/utils";
+import {isMac, isWindows} from "@/utils";
 
 const GITHUB_URL = 'https://github.com/'
 
@@ -91,34 +90,11 @@ export default {
       this.resizeWindow()
     },
     /*Nav Bar*/
-    loadReposInfo: async function (config) {
-      const organizations = await Promise.all(
-          config.organizations.map(async (orgInfo) => {
-            const githubService = await GitHubService.getInstance(orgInfo)
-            return githubService.getOrganization(orgInfo)
-          })
-      )
-
+    onRefreshed(organizations, err) {
       this.organizations = []
       this.organizations = organizations
-      this.updateAppIconStatus()
-
-      setTimeout(() => {
-        this.loadReposInfo(config)
-      }, 5 * 60 * 1000)
+      this.errMsg = err
     },
-    updateAppIconStatus: function () {
-      if (!this.organizations || !this.organizations.length) {
-        window.setAppIcon('BLACK')
-      }
-
-      if (isAllApproved(this.organizations)) {
-        window.setAppIcon('BLACK')
-      } else {
-        window.setAppIcon('BLUE')
-      }
-    },
-
     resizeWindow: function () {
       const bounds = this.$el.getBoundingClientRect()
       window.setSize(bounds.width, bounds.height, 500)
@@ -142,17 +118,9 @@ export default {
           })
     }, 200)
 
-    window.loadConfigs((err, data) => {
-      if (!err) {
-        this.loadReposInfo(data)
-      } else {
-        this.errMsg = err
-      }
-
-      setTimeout(() => {
-        this.resizeWindow()
-      }, 300)
-    });
+    setTimeout(() => {
+      this.resizeWindow()
+    }, 300)
   }
 }
 </script>
