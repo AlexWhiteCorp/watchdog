@@ -105,7 +105,7 @@ export default {
 
       setTimeout(() => {
         this.loadReposInfo(config)
-      }, 30 * 1000)
+      }, 5 * 60 * 1000)
     },
     updateAppIconStatus: function () {
       if (!this.organizations || !this.organizations.length) {
