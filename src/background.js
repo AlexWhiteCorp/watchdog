@@ -3,7 +3,7 @@
 import {app, protocol, BrowserWindow, ipcMain, Notification} from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
-import TrayWindow from "@/tray-window";
+import TrayWindow from "@/TrayWindow";
 import * as path from "path";
 import {isMac, isWindows} from "@/utils";
 import WindowsPlatform from "@/platform/WindowsPlatform";
