@@ -87,7 +87,7 @@ class GitHubService {
     static async getInstance(orgInfo) {
         let githubService = instances[orgInfo.organization]
         if (githubService === undefined) {
-            githubService = new GitHubService(orgInfo.access_token)
+            githubService = new GitHubService(orgInfo.accessToken)
 
             try {
                 githubService.authUser = await githubService.getSelfUser()
