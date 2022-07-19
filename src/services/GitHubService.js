@@ -61,7 +61,6 @@ class GitHubService {
                     prs
                         .filter(pr => pr.title.indexOf('Bump') === -1)
                         .map(pr => this.#fetchPR(repo, pr))
-
                 )
                 repo.pullRequests = repo.pullRequests
                     .filter(pr => !pr.draft)
@@ -74,10 +73,6 @@ class GitHubService {
         return this.client.getPullRequest(repo.getOwner(), repo.getName(), pr.number)
             .then(pr => {
                 if(pr.draft) {
-                    return pr
-                }
-
-                if(!pr.isOwner(this.authUser.login) && !pr.isReviewer(this.authUser.login)) {
                     return pr
                 }
 
@@ -95,9 +90,7 @@ class GitHubService {
             githubService = new GitHubService(orgInfo.access_token)
 
             try {
-                const authUser = await githubService.getSelfUser()
-                githubService.authUser = authUser
-
+                githubService.authUser = await githubService.getSelfUser()
             } catch (e) {
                 githubService.authUser = null
             }
