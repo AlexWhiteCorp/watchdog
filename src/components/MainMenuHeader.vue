@@ -4,7 +4,7 @@
       <updates-center></updates-center>
     </div>
     <div class="header-title">
-      <menu-item url="https://github.com/AlexWhiteCorp/gh-watchdog">
+      <menu-item url="https://alexwhitecorp.github.io/watchdog">
         WatchDog
       </menu-item>
     </div>
