@@ -1,5 +1,7 @@
 import GitHubClient from "@/clients/GitHubClient";
 
+const instances = {}
+
 class GitHubService {
 
     authUser
@@ -10,6 +12,28 @@ class GitHubService {
 
     getSelfUser() {
         return this.client.getSelfUser()
+    }
+
+    async getOrganization(orgInfo) {
+        if (this.authUser) {
+            const repos = await Promise.all(
+                orgInfo.groups.map(reposGroup =>
+                    this.getRepos(orgInfo.organization, reposGroup)
+                )
+            )
+
+            return {
+                organization: orgInfo.organization,
+                user: this.authUser,
+                repositories: repos,
+                credsError: false
+            }
+        } else {
+            return {
+                organization: orgInfo.organization,
+                credsError: true
+            }
+        }
     }
 
     async getRepos(organization, reposGroup) {
@@ -63,6 +87,25 @@ class GitHubService {
                         return pr
                     })
             })
+    }
+
+    static async getInstance(orgInfo) {
+        let githubService = instances[orgInfo.organization]
+        if (githubService === undefined) {
+            githubService = new GitHubService(orgInfo.access_token)
+
+            try {
+                const authUser = await githubService.getSelfUser()
+                githubService.authUser = authUser
+
+            } catch (e) {
+                githubService.authUser = null
+            }
+
+            instances[orgInfo.organization] = githubService
+        }
+
+        return githubService
     }
 }
 

@@ -32,8 +32,6 @@ import MenuNavbar from "@/components/MenuNavbar";
 import GitHubService from "@/services/GitHubService";
 import {isAllApproved, isMac, isWindows} from "@/utils";
 
-const services = {}
-
 export default {
   name: 'App',
   data: function () {
@@ -71,57 +69,18 @@ export default {
     loadReposInfo: async function (config) {
       const organizations = await Promise.all(
           config.organizations.map(async (orgInfo) => {
-            const githubService = await this.getGHService(orgInfo)
-            if (githubService.authUser) {
-              const repos = await Promise.all(
-                  orgInfo.groups.map(reposGroup =>
-                      githubService.getRepos(orgInfo.organization, reposGroup)
-                  )
-              )
-
-              return {
-                organization: orgInfo.organization,
-                user: githubService.authUser,
-                repositories: repos,
-                credsError: false
-              }
-            } else {
-              return {
-                organization: orgInfo.organization,
-                credsError: true
-              }
-            }
+            const githubService = await GitHubService.getInstance(orgInfo)
+            return githubService.getOrganization(orgInfo)
           })
       )
 
       this.organizations = []
-      setTimeout(() => {
-        this.organizations = organizations
-
-        this.updateAppIconStatus()
-      }, 100)
+      this.organizations = organizations
+      this.updateAppIconStatus()
 
       setTimeout(() => {
         this.loadReposInfo(config)
-      }, 5 * 60 * 1000)
-    },
-    getGHService: async function (orgInfo) {
-      let githubService = services[orgInfo.organization]
-      if (githubService === undefined) {
-        githubService = new GitHubService(orgInfo.access_token)
-
-        try {
-          const authUser = await githubService.getSelfUser()
-          githubService.authUser = authUser
-
-        } catch (e) {
-          githubService.authUser = null
-        }
-
-        services[orgInfo.organization] = githubService
-      }
-
-      return githubService
+      }, 30 * 1000)
     },
     resizeWindow: function () {
       const bounds = this.$el.getBoundingClientRect()
