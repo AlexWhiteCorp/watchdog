@@ -2,7 +2,7 @@ import {shell, ipcRenderer} from "electron";
 import * as fs from "fs";
 import * as os from "os";
 
-const CONFIGS_FILE_PATH = os.homedir() + '/.watchdog/config.json'
+const CONFIGS_FILE_PATH = os.homedir() + '/.watchdog/config2.json'
 
 window.appVersion = require('../package.json').version
 

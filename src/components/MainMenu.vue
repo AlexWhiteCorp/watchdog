@@ -148,6 +148,10 @@ export default {
       } else {
         this.errMsg = err
       }
+
+      setTimeout(() => {
+        this.resizeWindow()
+      }, 300)
     });
   }
 }
