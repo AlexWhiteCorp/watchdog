@@ -1,6 +1,8 @@
 <template>
   <div class="header-wrapper" ref="header">
-    <div class="header-options header-options-left"></div>
+    <div class="header-options header-options-left">
+      <updates-center></updates-center>
+    </div>
     <div class="header-title">
       <menu-item url="https://github.com/AlexWhiteCorp/gh-watchdog">
         WatchDog
@@ -15,6 +17,7 @@
 <script>
 import MenuItem from "@/components/MenuItem";
 import RefreshModule from "@/components/RefreshModule";
+import UpdatesCenter from "@/components/UpdatesCenter";
 
 export default {
   name: 'MainMenuHeader',
@@ -23,7 +26,8 @@ export default {
   },
   components: {
     'menu-item': MenuItem,
-    'refresh-module': RefreshModule
+    'refresh-module': RefreshModule,
+    'updates-center': UpdatesCenter
   }
 }
 </script>
@@ -51,6 +55,7 @@ export default {
 
 .header-options-left {
   grid-area: options-left;
+  margin-left: 10px;
 }
 
 .header-options-right {

@@ -9,7 +9,6 @@ import {isMac, isWindows} from "@/utils";
 import WindowsPlatform from "@/platform/WindowsPlatform";
 import MacOSPlatform from "@/platform/MacOSPlatform";
 import log from "electron-log";
-import UpdateService from "@/services/UpdateService";
 
 const APP_NAME = 'WatchDog'
 const TRAY_ICON_BLACK_PATH = path.join(__static, 'icons/logo_black@2x.png')
@@ -18,7 +17,6 @@ const TRAY_ICON_BLUE_PATH = path.join(__static, 'icons/logo_blue@2x.png')
 log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] {level} {text}'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-const updateService = new UpdateService()
 
 let window
 let platform = isWindows()

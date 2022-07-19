@@ -50,8 +50,8 @@ window.setAppIcon = (color) => {
     ipcRenderer.send('set-app-icon', color)
 }
 
-window.showNotification = (title, body) => {
-    ipcRenderer.send('show-notification', [title, body])
+window.showNotification = (subtitle, body) => {
+    ipcRenderer.send('show-notification', [subtitle, body])
 }
 
 window.quitApp = () => {
