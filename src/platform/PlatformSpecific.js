@@ -19,6 +19,8 @@ class PlatformSpecific {
 
     onBlurWindow() {}
 
+    onTrayClick() {}
+
     showWindow() {
         if(this.window) {
             this.window.show()

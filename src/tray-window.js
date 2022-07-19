@@ -22,7 +22,7 @@ const init = (options) => {
 
     tray.on("click", () => {
         if (platform.isWindowOpened()) {
-            platform.hideWindow()
+            platform.onTrayClick()
             return
         }
 

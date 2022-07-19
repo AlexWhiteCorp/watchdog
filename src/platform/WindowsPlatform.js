@@ -16,10 +16,28 @@ class WindowsPlatform extends PlatformSpecific {
         }
     }
 
+    showWindow() {
+        setTimeout(() => {
+            if(this.window) {
+                this.window.show()
+            }
+        })
+    }
+
+
+    onBlurWindow() {
+        if(this.window) {
+            this.window.hide()
+            this.wasBlured = true
+            setTimeout(() => {
+                this.wasBlured = false
+            }, 300)
+        }
+    }
 
     isWindowOpened() {
         if(this.window) {
-            return this.window.isFocused()
+            return this.window.isFocused() || this.wasBlured
         }
 
         return false

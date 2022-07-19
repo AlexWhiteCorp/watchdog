@@ -70,7 +70,7 @@ ipcMain.on('resize-window', (event, args) => {
 })
 
 ipcMain.on('hide-window', () => {
-  platform.hideWindow()
+  window.blur()
 })
 
 ipcMain.on('console-log', (event, args) => {
