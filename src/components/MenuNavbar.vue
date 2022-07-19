@@ -1,66 +1,62 @@
 <template>
   <div class="menu-navbar">
-    <div class="nav-btn menu-navbar-prev" @click="prevOrg">⬅</div>
-    <menu-item class="menu-navbar-curr-org"
-               :url="getOrgUrl(currOrg.organization)">
-      {{ currOrg.organization }}
+    <div class="nav-btn menu-navbar-prev" @click="prevItem">⬅</div>
+    <menu-item class="menu-navbar-curr-org" :url="onItemTitleClick(currItem)">
+      {{ getItemTitle(currItem) }}
     </menu-item>
-    <div class="nav-btn menu-navbar-next" @click="nextOrg">⬅</div>
+    <div class="nav-btn menu-navbar-next" @click="nextItem">⬅</div>
   </div>
 </template>
 
 <script>
 import MenuItem from "@/components/MenuItem";
 
-const GITHUB_URL = 'https://github.com/'
-
 export default {
   name: 'MenuNavbar',
   props: {
-    organizations: Array,
-    onOrgChange: Function
+    items: Array,
+    getItemTitle: Function,
+    onItemTitleClick: Function,
+    onActiveItemChanged: Function
   },
   data: function () {
     return {
-      currOrgIndex: 0
+      currItemIndex: 0
     }
   },
   components: {
     'menu-item': MenuItem
   },
   computed: {
-    currOrg: function () {
-      return this.organizations[this.currOrgIndex]
+    currItem: function () {
+      return this.items[this.currItemIndex]
     }
   },
   methods: {
-    getOrgUrl: function (org) {
-      return GITHUB_URL + org
-    },
-    prevOrg: function (e) {
-      this.currOrgIndex--
-      if (this.currOrgIndex < 0) {
-        this.currOrgIndex = this.organizations.length - 1
+    prevItem: function (e) {
+      this.currItemIndex--
+      if (this.currItemIndex < 0) {
+        this.currItemIndex = this.items.length - 1
       }
-      this.updateOrg()
+      this.setActiveItem()
 
       e.stopPropagation()
     },
-    nextOrg: function (e) {
-      this.currOrgIndex++
-      if (this.currOrgIndex >= this.organizations.length) {
-        this.currOrgIndex = 0
+    nextItem: function (e) {
+      this.currItemIndex++
+      if (this.currItemIndex >= this.items.length) {
+        this.currItemIndex = 0
       }
-      this.updateOrg()
+      this.setActiveItem()
 
       e.stopPropagation()
     },
-    updateOrg: function () {
-      this.onOrgChange(this.organizations[this.currOrgIndex])
+    setActiveItem: function () {
+      this.onActiveItemChanged(this.currItemIndex)
     }
   },
   created() {
-    this.updateOrg()
+    this.setActiveItem()
   }
 }
 </script>

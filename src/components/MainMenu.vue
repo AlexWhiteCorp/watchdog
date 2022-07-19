@@ -5,10 +5,18 @@
       <menu-header></menu-header>
 
       <template v-if="organizations && organizations.length">
-        <menu-navbar v-if="!isBottomPosition()" :organizations="organizations" :onOrgChange="onOrgChange"></menu-navbar>
+        <menu-navbar v-if="!isBottomPosition()"
+                     :items="organizations"
+                     :getItemTitle="getItemTitle"
+                     :onItemTitleClick="onItemTitleClick"
+                     :onActiveItemChanged="onItemChange"></menu-navbar>
         <menu-delimiter></menu-delimiter>
         <organization-page v-if="currOrg && !currOrg.credsError" :org="currOrg"></organization-page>
-        <menu-navbar v-if="isBottomPosition()" :organizations="organizations" :onOrgChange="onOrgChange"></menu-navbar>
+        <menu-navbar v-if="isBottomPosition()"
+                     :items="organizations"
+                     :getItemTitle="getItemTitle"
+                     :onItemTitleClick="onItemTitleClick"
+                     :onActiveItemChanged="onItemChange"></menu-navbar>
       </template>
 
       <menu-item v-else-if="!errMsg" class="menu-item-default">Loading info...</menu-item>
@@ -32,12 +40,14 @@ import MenuNavbar from "@/components/MenuNavbar";
 import GitHubService from "@/services/GitHubService";
 import {isAllApproved, isMac, isWindows} from "@/utils";
 
+const GITHUB_URL = 'https://github.com/'
+
 export default {
   name: 'App',
   data: function () {
     return {
       organizations: [],
-      currOrg: null,
+      currOrgIndex: 0,
       errMsg: null,
       trayPosition: isWindows() ? 'BOTTOM_RIGHT' : (isMac() ? 'TOP_RIGHT' : null)
     }
@@ -56,16 +66,31 @@ export default {
       }
 
       return ''
+    },
+    currOrg() {
+      if(this.organizations && this.organizations.length) {
+        return this.organizations[this.currOrgIndex]
+      }
+
+      return null
     }
   },
   methods: {
     isBottomPosition: function () {
       return this.trayPosition === 'BOTTOM_RIGHT'
     },
-    onOrgChange: function (currOrg) {
-      this.currOrg = currOrg
+    /*Nav Bar*/
+    getItemTitle: function (item) {
+      return item.organization
+    },
+    onItemTitleClick: function (item) {
+      return GITHUB_URL + item.organization
+    },
+    onItemChange: function (currOrgIndex) {
+      this.currOrgIndex = currOrgIndex
       this.resizeWindow()
     },
+    /*Nav Bar*/
     loadReposInfo: async function (config) {
       const organizations = await Promise.all(
           config.organizations.map(async (orgInfo) => {
@@ -82,10 +107,6 @@ export default {
         this.loadReposInfo(config)
       }, 30 * 1000)
     },
-    resizeWindow: function () {
-      const bounds = this.$el.getBoundingClientRect()
-      window.setSize(bounds.width, bounds.height, 500)
-    },
     updateAppIconStatus: function () {
       if (!this.organizations || !this.organizations.length) {
         window.setAppIcon('BLACK')
@@ -96,6 +117,11 @@ export default {
       } else {
         window.setAppIcon('BLUE')
       }
+    },
+
+    resizeWindow: function () {
+      const bounds = this.$el.getBoundingClientRect()
+      window.setSize(bounds.width, bounds.height, 500)
     },
     hideMenu: function () {
       window.hideWindow()
