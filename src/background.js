@@ -61,7 +61,6 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 ipcMain.on('resize-window', (event, args) => {
-  console.log('Resize: ' + args)
   const [width, height] = args
   if(window) {
     platform.resizeWindow(width, height)

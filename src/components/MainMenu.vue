@@ -147,7 +147,6 @@ export default {
     }
   },
   updated() {
-    window.log('[MainMenu]: Updated')
     this.resizeWindow()
   },
   mounted() {
