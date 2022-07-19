@@ -1,5 +1,7 @@
 import GitHubClient from "@/clients/GitHubClient";
 
+const instances = {}
+
 class GitHubService {
 
     authUser
@@ -10,6 +12,28 @@ class GitHubService {
 
     getSelfUser() {
         return this.client.getSelfUser()
+    }
+
+    async getOrganization(orgInfo) {
+        if (this.authUser) {
+            const repos = await Promise.all(
+                orgInfo.groups.map(reposGroup =>
+                    this.getRepos(orgInfo.organization, reposGroup)
+                )
+            )
+
+            return {
+                organization: orgInfo.organization,
+                user: this.authUser,
+                repositories: repos,
+                credsError: false
+            }
+        } else {
+            return {
+                organization: orgInfo.organization,
+                credsError: true
+            }
+        }
     }
 
     async getRepos(organization, reposGroup) {
@@ -37,7 +61,6 @@ class GitHubService {
                     prs
                         .filter(pr => pr.title.indexOf('Bump') === -1)
                         .map(pr => this.#fetchPR(repo, pr))
-
                 )
                 repo.pullRequests = repo.pullRequests
                     .filter(pr => !pr.draft)
@@ -53,16 +76,29 @@ class GitHubService {
                     return pr
                 }
 
-                if(!pr.isOwner(this.authUser.login) && !pr.isReviewer(this.authUser.login)) {
-                    return pr
-                }
-
                 return this.client.getPullRequestReviews(repo.getOwner(), repo.getName(), pr.number)
                     .then(reviewers => {
                         pr.reviewers = reviewers
                         return pr
                     })
             })
+    }
+
+    static async getInstance(orgInfo) {
+        let githubService = instances[orgInfo.organization]
+        if (githubService === undefined) {
+            githubService = new GitHubService(orgInfo.accessToken)
+
+            try {
+                githubService.authUser = await githubService.getSelfUser()
+            } catch (e) {
+                githubService.authUser = null
+            }
+
+            instances[orgInfo.organization] = githubService
+        }
+
+        return githubService
     }
 }
 

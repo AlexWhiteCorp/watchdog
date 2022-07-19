@@ -3,7 +3,7 @@
 import {app, protocol, BrowserWindow, ipcMain, Notification} from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
-import TrayWindow from "@/tray-window";
+import TrayWindow from "@/TrayWindow";
 import * as path from "path";
 import {isMac, isWindows} from "@/utils";
 import WindowsPlatform from "@/platform/WindowsPlatform";
@@ -11,6 +11,7 @@ import MacOSPlatform from "@/platform/MacOSPlatform";
 import log from "electron-log";
 
 const APP_NAME = 'WatchDog'
+const APP_ICON_BLACK_PATH = path.join(__static, 'icons/icon_black.png')
 const TRAY_ICON_BLACK_PATH = path.join(__static, 'icons/logo_black@2x.png')
 const TRAY_ICON_BLUE_PATH = path.join(__static, 'icons/logo_blue@2x.png')
 
@@ -33,7 +34,7 @@ async function createWindow() {
     transparent: true,
     resizable: false,
     show: false,
-    width: 700,
+    width: 600,
     height: 500,
     webPreferences: {
       devTools: isDevelopment,
@@ -59,7 +60,6 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 ipcMain.on('resize-window', (event, args) => {
-  console.log('Resize: ' + args)
   const [width, height] = args
   if(window) {
     platform.resizeWindow(width, height)
@@ -68,7 +68,7 @@ ipcMain.on('resize-window', (event, args) => {
 })
 
 ipcMain.on('hide-window', () => {
-  platform.hideWindow()
+  window.blur()
 })
 
 ipcMain.on('console-log', (event, args) => {
@@ -85,12 +85,19 @@ ipcMain.on( 'log-info', (event, args) => {
 
 ipcMain.on('show-notification', (event, args) => {
   const [subtitle, body] = args
-  new Notification({
+  showNotification(subtitle, body)
+})
+
+const showNotification = (subtitle, body) => {
+  const notification = new Notification({
     title: APP_NAME,
+    icon: isWindows() ? APP_ICON_BLACK_PATH : undefined,
     subtitle: subtitle,
     body: body
-  }).show()
-})
+  })
+
+  notification.show()
+}
 
 ipcMain.on('set-app-icon', (event, color) => {
   const tray = TrayWindow.getTray()
@@ -142,3 +149,5 @@ if (isDevelopment) {
     })
   }
 }
+
+export { showNotification }

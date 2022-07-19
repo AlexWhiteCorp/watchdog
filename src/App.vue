@@ -36,4 +36,18 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
 }
+
+.option-btn {
+  display: flex;
+  min-width: 30px;
+  max-width: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  cursor: pointer;
+}
+
+.option-btn-icon {
+  height: 14px;
+  margin: auto;
+}
 </style>

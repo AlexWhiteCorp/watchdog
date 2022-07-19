@@ -1,4 +1,5 @@
 import PlatformSpecific from "@/platform/PlatformSpecific";
+import {app} from "electron";
 
 const margin = {
     x: -350,
@@ -6,6 +7,12 @@ const margin = {
 }
 
 class WindowsPlatform extends PlatformSpecific {
+
+    constructor() {
+        super();
+        app.setAppUserModelId('WatchDog')
+    }
+
     getMargin() {
         return margin
     }
@@ -16,10 +23,28 @@ class WindowsPlatform extends PlatformSpecific {
         }
     }
 
+    showWindow() {
+        setTimeout(() => {
+            if(this.window) {
+                this.window.show()
+            }
+        }, 350)
+    }
+
+
+    onBlurWindow() {
+        if(this.window) {
+            this.window.hide()
+            this.wasBlured = true
+            setTimeout(() => {
+                this.wasBlured = false
+            }, 300)
+        }
+    }
 
     isWindowOpened() {
         if(this.window) {
-            return this.window.isFocused()
+            return this.window.isFocused() || this.wasBlured
         }
 
         return false

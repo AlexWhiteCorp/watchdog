@@ -16,7 +16,15 @@ class MacOSPlatform extends PlatformSpecific {
     }
 
     onBlurWindow() {
-        this.hideWindow()
+        if(this.window) {
+            this.hideWindow()
+        }
+    }
+
+    onTrayClick() {
+        if(this.window) {
+            this.window.blur()
+        }
     }
 }
 

@@ -2,13 +2,21 @@
   <div id="app" class="main-wrapper" :class="winPossRelatedStyles"
        ref="app" @click="hideMenu">
     <div class="main-menu">
-      <menu-header></menu-header>
+      <menu-header :onRefreshed="onRefreshed"></menu-header>
 
       <template v-if="organizations && organizations.length">
-        <menu-navbar v-if="!isBottomPosition()" :organizations="organizations" :onOrgChange="onOrgChange"></menu-navbar>
+        <menu-navbar v-if="!isBottomPosition()"
+                     :items="organizations"
+                     :getItemTitle="getItemTitle"
+                     :onItemTitleClick="onItemTitleClick"
+                     :onActiveItemChanged="onItemChange"></menu-navbar>
         <menu-delimiter></menu-delimiter>
         <organization-page v-if="currOrg && !currOrg.credsError" :org="currOrg"></organization-page>
-        <menu-navbar v-if="isBottomPosition()" :organizations="organizations" :onOrgChange="onOrgChange"></menu-navbar>
+        <menu-navbar v-if="isBottomPosition()"
+                     :items="organizations"
+                     :getItemTitle="getItemTitle"
+                     :onItemTitleClick="onItemTitleClick"
+                     :onActiveItemChanged="onItemChange"></menu-navbar>
       </template>
 
       <menu-item v-else-if="!errMsg" class="menu-item-default">Loading info...</menu-item>
@@ -29,17 +37,16 @@ import MenuItem from "@/components/MenuItem";
 import OrganizationPage from "@/components/OrganizationPage";
 import MenuDelimiter from "@/components/MenuDelimiter";
 import MenuNavbar from "@/components/MenuNavbar";
-import GitHubService from "@/services/GitHubService";
-import {isAllApproved, isMac, isWindows} from "@/utils";
+import {isMac, isWindows} from "@/utils";
 
-const services = {}
+const GITHUB_URL = 'https://github.com/'
 
 export default {
   name: 'App',
   data: function () {
     return {
       organizations: [],
-      currOrg: null,
+      currOrgIndex: 0,
       errMsg: null,
       trayPosition: isWindows() ? 'BOTTOM_RIGHT' : (isMac() ? 'TOP_RIGHT' : null)
     }
@@ -58,85 +65,39 @@ export default {
       }
 
       return ''
+    },
+    currOrg() {
+      if(this.organizations && this.organizations.length) {
+        return this.organizations[this.currOrgIndex]
+      }
+
+      return null
     }
   },
   methods: {
     isBottomPosition: function () {
       return this.trayPosition === 'BOTTOM_RIGHT'
     },
-    onOrgChange: function (currOrg) {
-      this.currOrg = currOrg
+    /*Nav Bar*/
+    getItemTitle: function (item) {
+      return item.organization
+    },
+    onItemTitleClick: function (item) {
+      return GITHUB_URL + item.organization
+    },
+    onItemChange: function (currOrgIndex) {
+      this.currOrgIndex = currOrgIndex
       this.resizeWindow()
     },
-    loadReposInfo: async function (config) {
-      const organizations = await Promise.all(
-          config.organizations.map(async (orgInfo) => {
-            const githubService = await this.getGHService(orgInfo)
-            if (githubService.authUser) {
-              const repos = await Promise.all(
-                  orgInfo.groups.map(reposGroup =>
-                      githubService.getRepos(orgInfo.organization, reposGroup)
-                  )
-              )
-
-              return {
-                organization: orgInfo.organization,
-                user: githubService.authUser,
-                repositories: repos,
-                credsError: false
-              }
-            } else {
-              return {
-                organization: orgInfo.organization,
-                credsError: true
-              }
-            }
-          })
-      )
-
+    /*Nav Bar*/
+    onRefreshed(organizations, err) {
       this.organizations = []
-      setTimeout(() => {
-        this.organizations = organizations
-
-        this.updateAppIconStatus()
-      }, 100)
-
-      setTimeout(() => {
-        this.loadReposInfo(config)
-      }, 5 * 60 * 1000)
-    },
-    getGHService: async function (orgInfo) {
-      let githubService = services[orgInfo.organization]
-      if (githubService === undefined) {
-        githubService = new GitHubService(orgInfo.access_token)
-
-        try {
-          const authUser = await githubService.getSelfUser()
-          githubService.authUser = authUser
-
-        } catch (e) {
-          githubService.authUser = null
-        }
-
-        services[orgInfo.organization] = githubService
-      }
-
-      return githubService
+      this.organizations = organizations
+      this.errMsg = err
     },
     resizeWindow: function () {
       const bounds = this.$el.getBoundingClientRect()
       window.setSize(bounds.width, bounds.height, 500)
-    },
-    updateAppIconStatus: function () {
-      if (!this.organizations || !this.organizations.length) {
-        window.setAppIcon('BLACK')
-      }
-
-      if (isAllApproved(this.organizations)) {
-        window.setAppIcon('BLACK')
-      } else {
-        window.setAppIcon('BLUE')
-      }
     },
     hideMenu: function () {
       window.hideWindow()
@@ -147,7 +108,6 @@ export default {
     }
   },
   updated() {
-    window.log('[MainMenu]: Updated')
     this.resizeWindow()
   },
   mounted() {
@@ -158,13 +118,9 @@ export default {
           })
     }, 200)
 
-    window.loadConfigs((err, data) => {
-      if (!err) {
-        this.loadReposInfo(data)
-      } else {
-        this.errMsg = err
-      }
-    });
+    setTimeout(() => {
+      this.resizeWindow()
+    }, 300)
   }
 }
 </script>
