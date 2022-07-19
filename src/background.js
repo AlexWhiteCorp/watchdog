@@ -11,6 +11,7 @@ import MacOSPlatform from "@/platform/MacOSPlatform";
 import log from "electron-log";
 
 const APP_NAME = 'WatchDog'
+const APP_ICON_BLACK_PATH = path.join(__static, 'icons/icon_black.png')
 const TRAY_ICON_BLACK_PATH = path.join(__static, 'icons/logo_black@2x.png')
 const TRAY_ICON_BLUE_PATH = path.join(__static, 'icons/logo_blue@2x.png')
 
@@ -90,6 +91,7 @@ ipcMain.on('show-notification', (event, args) => {
 const showNotification = (subtitle, body) => {
   const notification = new Notification({
     title: APP_NAME,
+    icon: isWindows() ? APP_ICON_BLACK_PATH : undefined,
     subtitle: subtitle,
     body: body
   })

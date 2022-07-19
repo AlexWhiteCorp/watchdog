@@ -1,4 +1,5 @@
 import PlatformSpecific from "@/platform/PlatformSpecific";
+import {app} from "electron";
 
 const margin = {
     x: -350,
@@ -6,6 +7,12 @@ const margin = {
 }
 
 class WindowsPlatform extends PlatformSpecific {
+
+    constructor() {
+        super();
+        app.setAppUserModelId('WatchDog')
+    }
+
     getMargin() {
         return margin
     }
