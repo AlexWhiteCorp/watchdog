@@ -26,7 +26,12 @@ class WindowsPlatform extends PlatformSpecific {
     showWindow() {
         setTimeout(() => {
             if(this.window) {
+                const bounds = this.window.getBounds()
+                this.window.setPosition(-33333, -33333, false)
                 this.window.show()
+                setTimeout(() => {
+                    this.window.setBounds(bounds)
+                }, 100)
             }
         }, 350)
     }
