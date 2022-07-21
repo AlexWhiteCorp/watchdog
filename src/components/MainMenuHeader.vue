@@ -9,8 +9,11 @@
       </menu-item>
     </div>
     <div class="header-options header-options-right">
-      <refresh-module :onRefreshed="onRefreshed"></refresh-module>
+      <refresh-module :onRefreshScheduled="onRefreshScheduled"
+                      :onRefreshed="onRefreshed$Proxy"
+                      :onPause="onPause"></refresh-module>
     </div>
+    <div ref="refresh-await-progress-bar" class="refresh-await-progress-bar"></div>
   </div>
 </template>
 
@@ -24,10 +27,26 @@ export default {
   props: {
     'onRefreshed': Function
   },
+  computed: {
+  },
   components: {
     'menu-item': MenuItem,
     'refresh-module': RefreshModule,
     'updates-center': UpdatesCenter
+  },
+  methods: {
+    onRefreshed$Proxy: function (data) {
+      this.$refs['refresh-await-progress-bar'].classList.remove('refresh-await-progress-bar-animation');
+      this.onRefreshed(data)
+    },
+    onPause: function () {
+      this.$refs['refresh-await-progress-bar'].classList.remove('refresh-await-progress-bar-animation');
+    },
+    onRefreshScheduled: function () {
+      setTimeout(() => {
+        this.$refs['refresh-await-progress-bar'].classList.add('refresh-await-progress-bar-animation');
+      }, 200)
+    }
   }
 }
 </script>
@@ -36,6 +55,7 @@ export default {
   display: grid;
   grid-template-columns: max-content auto 100px auto max-content;
   grid-template-areas: "options-left . title . options-right";
+  position: relative;
   background: var(--panel);
 }
 
@@ -63,5 +83,24 @@ export default {
   display: flex;
   flex-direction: row-reverse;
   margin-right: 10px;
+}
+
+.refresh-await-progress-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: var(--main-font);
+  opacity: 0.3;
+  height: 1px;
+  width: 0%;
+}
+
+.refresh-await-progress-bar-animation {
+  -webkit-transition: width 300s ease-in-out;
+  -moz-transition: width 300s ease-in-out;
+  -o-transition: width 300s ease-in-out;
+  transition: width 300s ease-in-out;
+
+  width: 100%;
 }
 </style>

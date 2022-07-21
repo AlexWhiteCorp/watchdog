@@ -26,11 +26,14 @@ export default {
     }
   },
   props: {
+    'onRefreshScheduled': Function,
+    'onPause': Function,
     'onRefreshed': Function
   },
   methods: {
     pause(e) {
       this.isPaused = true
+      this.onPause()
 
       e.stopPropagation()
     },
@@ -56,6 +59,7 @@ export default {
       this.onRefreshed(organizations)
       this.updateAppIconStatus(organizations)
 
+      this.onRefreshScheduled()
       setTimeout(() => {
         this.loadReposInfo()
       }, REFRESH_DELAY)
