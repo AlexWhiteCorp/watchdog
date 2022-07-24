@@ -83,6 +83,10 @@ ipcMain.on( 'log-info', (event, args) => {
   log.info(`[${args[0]}]: ${JSON.stringify(args[1])}`)
 })
 
+ipcMain.on( 'log-error', (event, args) => {
+  log.error(`[${args[0]}]: ${JSON.stringify(args[1])}`)
+})
+
 ipcMain.on('show-notification', (event, args) => {
   const [subtitle, body] = args
   showNotification(subtitle, body)
