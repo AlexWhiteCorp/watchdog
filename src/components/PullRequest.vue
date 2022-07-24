@@ -3,7 +3,7 @@
     <div class="pr-title">
       <span v-if="isApprovedByUser" title="you have approved this PR">✓</span>
       <span v-else-if="isViewedByUser" title="you have reviewed this PR without approve">👁</span>
-      {{pr.title}} ({{pr.user.login}})
+      {{pr.getTitle()}} ({{pr.getAuthor().getUsername()}})
     </div>
     <div class="pr-info">
       <div class="pr-reviews" title="total approves">{{totalApproves}} ✓</div>
@@ -14,38 +14,39 @@
 </template>
 
 <script>
-import {GHPullRequest} from "@/models/GitHubModels";
+import {GitOrganization, GitPullRequest} from "@/models/Git.model";
 
 export default {
   name: 'MenuItem',
   props: {
-    org: Object,
-    pr: GHPullRequest
+    org: GitOrganization,
+    pr: GitPullRequest
   },
   computed: {
     isApprovedByUser: function () {
-      return this.pr.isApprovedByUser(this.org.user.login)
+      return this.pr.isApprovedByUser(this.org.user.getUsername())
     },
     isViewedByUser: function () {
-      return this.pr.isViewedByUser(this.pr.user.login, this.org.user.login)
+      return this.pr.isViewedByUser(this.pr.getAuthor().getUsername(), this.org.user.getUsername())
     },
     totalApproves: function () {
       return this.pr.getApprovesCount()
     },
     authorCommentsCount: function() {
-      return this.pr.getAuthorCommentsCount(this.pr.user.login)
+      return this.pr.getAuthorCommentsCount(this.pr.getAuthor().getUsername())
     },
     reviewersCommentsCount: function() {
-      return this.pr.getReviewersCommentsCount(this.pr.user.login)
+      return this.pr.getReviewersCommentsCount(this.pr.getAuthor().getUsername())
     }
-  },
-  methods: {},
-  async created() {
   }
 }
 </script>
 <style scoped>
 .pr-wrapper {
+}
+
+.pr-title{
+  word-break: break-all;
 }
 
 .pr-info {

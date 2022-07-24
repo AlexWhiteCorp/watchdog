@@ -1,7 +1,7 @@
 <template>
   <div class="organization-page-wrapper">
-    <template v-for="repoGroup in org.repositories" :key="repoGroup[0]">
-      <repos-group :organization="org" :repos="repoGroup"></repos-group>
+    <template v-for="repoGroup in org.groups" :key="repoGroup.repositories[0]">
+      <repos-group :organization="org" :repoGroup="repoGroup"></repos-group>
       <menu-delimiter class="delimiter"></menu-delimiter>
     </template>
   </div>
@@ -10,11 +10,12 @@
 <script>
 import ReposGroup from "@/components/ReposGroup";
 import MenuDelimiter from "@/components/MenuDelimiter";
+import {GitOrganization} from "@/models/Git.model";
 
 export default {
   name: 'OrganizationPage',
   props: {
-    org: Object
+    org: GitOrganization
   },
   components: {
     'repos-group': ReposGroup,
