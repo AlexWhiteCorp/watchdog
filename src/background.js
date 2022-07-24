@@ -5,7 +5,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import TrayWindow from "@/TrayWindow";
 import * as path from "path";
-import {isMac, isWindows} from "@/utils";
+import {isMac, isWindows} from "@/utils/utils";
 import WindowsPlatform from "@/platform/WindowsPlatform";
 import MacOSPlatform from "@/platform/MacOSPlatform";
 import log from "electron-log";
