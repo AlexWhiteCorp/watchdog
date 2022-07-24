@@ -1,28 +1,20 @@
-import axios from "axios";
-import {getAppVersion, getOSId, isVersionOutdated} from "@/utils";
+import {getAppVersion, getOSId, isVersionOutdated} from "@/utils/utils";
+import UpdatesClient from "@/clients/UpdatesClient";
 
-const api = axios.create({
-    baseURL: 'https://alexwhitecorp.github.io/watchdog',
-})
-
-api.interceptors.request.use(
-    (config) => {
-        const method = config.method.toUpperCase()
-        const path = config.url
-        window.logger.debug(`[${UpdateService.name}]: `, `${method} ${path}`)
-        return config;
-    }, (error) => {
-        return Promise.reject(error);
-    }
-);
+const API_URL = 'https://alexwhitecorp.github.io/watchdog'
 
 class UpdateService {
 
+    constructor() {
+        this.api = new UpdatesClient(API_URL)
+    }
+
     checkUpdates() {
-        return api.get('/versions.json')
-            .then(response => {
+        return this.api
+            .getLastVersions()
+            .then(lastVersions => {
                 const appVersion = getAppVersion()
-                const lastVersion = response.data[getOSId()]
+                const lastVersion = lastVersions[getOSId()]
                 if (!lastVersion) {
                     window.logger.info(`[${UpdateService.name}]: `, 'Can\'t determine last actual version')
                     return false
