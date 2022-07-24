@@ -1,4 +1,4 @@
-import ModelMapper from "@/ModelMapper";
+import ModelMapper from "@/utils/ModelMapper";
 import {GLProject, GLUser} from "@/models/GitLab.model";
 import {GITLAB_CURRENT_USER_QUERY, GITLAB_PROJECT_QUERY} from "@/clients/graphql.query";
 import ApiClient from "@/clients/ApiClient";
