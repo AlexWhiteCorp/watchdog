@@ -1,0 +1,38 @@
+{
+  "fullPath": "AlexWhiteCorp/project-1",
+  "webUrl": "https://gitlab.com/AlexWhiteCorp/project-1",
+  "mergeRequests": {
+    "edges": [
+      {
+        "node": {
+          "title": "Merge Request 1 Title",
+          "webUrl": "https://gitlab.com/AlexWhiteCorp/project-1/-/merge_requests/1",
+          "updatedAt": "2022-07-24T11:11:49Z",
+          "author": {
+            "username": "AlexWhiteCorp"
+          },
+          "reviewers": {
+            "edges": [
+              {
+                "node": {
+                  "username": "NotAlexWhiteCorp-1"
+                }
+              },
+              {
+                "node": {
+                  "username": "NotAlexWhiteCorp-2"
+                }
+              }
+            ]
+          },
+          "approvedBy": {
+            "edges": []
+          },
+          "discussions": {
+            "edges": []
+          }
+        }
+      }
+    ]
+  }
+}
