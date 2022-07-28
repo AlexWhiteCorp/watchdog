@@ -27,7 +27,7 @@ export default {
       return this.pr.isApprovedByUser(this.org.user.getUsername())
     },
     isViewedByUser: function () {
-      return this.pr.isViewedByUser(this.pr.getAuthor().getUsername(), this.org.user.getUsername())
+      return this.pr.isViewedByUser(this.org.user.getUsername())
     },
     totalApproves: function () {
       return this.pr.getApprovesCount()
