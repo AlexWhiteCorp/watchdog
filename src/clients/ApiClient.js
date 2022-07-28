@@ -12,6 +12,7 @@ class ApiClient {
             timeout: 10000
         })
 
+        /* istanbul ignore next */
         this.api.interceptors.request.use(
             (config) => {
                 const url = config.baseURL
