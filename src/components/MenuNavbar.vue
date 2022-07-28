@@ -8,6 +8,7 @@
   </div>
 </template>
 
+
 <script>
 import MenuItem from "@/components/MenuItem";
 
