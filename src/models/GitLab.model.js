@@ -1,5 +1,4 @@
 import {GitPullRequest, GitRepository, GitReview, GitUser} from "@/models/Git.model";
-import {dateFormatted} from "@/utils/utils";
 
 export class GLUser extends GitUser {
 
@@ -88,7 +87,7 @@ export class GLMergeRequest extends GitPullRequest{
     }
 
     getLastUpdate() {
-        return dateFormatted(this.updatedAt)
+        return this.updatedAt
     }
 
     getId() {

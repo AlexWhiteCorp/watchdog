@@ -8,13 +8,14 @@
     <div class="pr-info">
       <div class="pr-reviews" title="total approves">{{totalApproves}} ✓</div>
       <div class="pr-comments" title="PR author comments/reviewers comments">{{authorCommentsCount}}/{{reviewersCommentsCount}} 💬</div>
-      <div class="pr-update" title="last update">{{pr.getLastUpdate()}}</div>
+      <div class="pr-update" title="last update">{{lastUpdate}}</div>
     </div>
   </div>
 </template>
 
 <script>
 import {GitOrganization, GitPullRequest} from "@/models/Git.model";
+import {dateFormatted} from "@/utils/utils";
 
 export default {
   name: 'MenuItem',
@@ -37,6 +38,9 @@ export default {
     },
     reviewersCommentsCount: function() {
       return this.pr.getReviewersCommentsCount(this.pr.getAuthor().getUsername())
+    },
+    lastUpdate: function () {
+      return dateFormatted(this.pr.getLastUpdate())
     }
   }
 }
