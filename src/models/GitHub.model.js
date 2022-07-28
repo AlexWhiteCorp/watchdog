@@ -1,4 +1,3 @@
-import {dateFormatted} from "@/utils/utils";
 import {GitPullRequest, GitRepository, GitReview, GitUser} from "@/models/Git.model";
 
 export class GHUser extends GitUser{
@@ -91,14 +90,14 @@ export class GHPullRequest extends GitPullRequest{
 
     getApprovesCount(): number {
         return new Set(
-            this.reviewers()
+            this.reviewers
                 .filter(review => review.isApproveReview())
                 .map(review => review.getAuthor().getUsername())
         ).size
     }
 
     getLastUpdate() {
-        return dateFormatted(this.updated_at)
+        return this.updated_at
     }
 
     getReviewersCommentsCount(authorLogin): number {
