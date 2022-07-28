@@ -6,6 +6,6 @@ export const isAllApproved = (organizations: GitOrganization[]) => {
         .every(org => org.groups
             .flatMap(group => group.repositories)
             .flatMap(repo => repo.getPullRequests())
-            .every(pr => pr.isApproved() || pr.isViewedByUser(pr.getAuthor().getUsername(), org.user.getUsername()))
+            .every(pr => pr.isApproved() || pr.isViewedByUser(org.user.getUsername()))
         )
 }
