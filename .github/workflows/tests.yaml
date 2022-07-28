@@ -2,10 +2,12 @@ name: Run Tests
 on:
   push:
   pull_request:
+    branches:
+      - develop
+      - main
 
 jobs:
   run_test:
-    name: Run Tests
     runs-on: macos-10.15
     steps:
       - name: Checkout
