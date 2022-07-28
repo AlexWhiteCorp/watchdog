@@ -59,7 +59,7 @@ const PRESET = [
                     getPRUrl: 'https://gitlab.com/AlexWhiteCorp/project-1/-/merge_requests/1',
                     getPRId: 1,
                     getPRTitle: 'Merge Request 1 Title',
-                    getPRLastUpdate: '2:11: 7.24.2022',
+                    getPRLastUpdate: '2022-07-24T11:11:49Z',
                 }
             },
             {
@@ -90,7 +90,7 @@ const PRESET = [
                     getPRUrl: 'https://gitlab.com/NotAlexWhiteCorp-1/project-2/-/merge_requests/2',
                     getPRId: 2,
                     getPRTitle: 'Merge Request 2 Title',
-                    getPRLastUpdate: '2:11: 7.24.2022',
+                    getPRLastUpdate: '2022-07-24T11:11:49Z',
                 }
             },
             {
@@ -121,7 +121,7 @@ const PRESET = [
                     getPRUrl: 'https://gitlab.com/NotAlexWhiteCorp-1/project-2/-/merge_requests/2',
                     getPRId: 2,
                     getPRTitle: 'Merge Request 2 Title',
-                    getPRLastUpdate: '2:11: 7.24.2022',
+                    getPRLastUpdate: '2022-07-24T11:11:49Z',
                 }
             }
         ]
