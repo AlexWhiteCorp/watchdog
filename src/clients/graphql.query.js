@@ -14,6 +14,7 @@ export const GITLAB_PROJECT_QUERY = `
         mergeRequests(state: opened) {
           edges {
             node {
+              iid
               title
               webUrl
               updatedAt
@@ -37,11 +38,11 @@ export const GITLAB_PROJECT_QUERY = `
               discussions {
                 edges{
                     node{
-                    resolvable
                     resolved
                     notes {
                       edges {
                         node {
+                          system
                           author {
                             username
                           }
