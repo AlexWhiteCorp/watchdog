@@ -42,11 +42,16 @@ export class GitUser {
 
 export class GitRepository {
 
+    notFound: boolean = false
+
+    isNotFound(): boolean {
+        return this.notFound
+    }
+
     getOwner(): string {}
     getName(): string {}
     getUrl(): string {}
     getPullRequests(): GitPullRequest[] {}
-    isNotFound(): boolean {}
 }
 
 export class GitPullRequest {
@@ -71,16 +76,7 @@ export class GitPullRequest {
         return isReviewed;
     }
 
-    isViewedByUser(prAuthor, localUser): boolean {
-        if (prAuthor === localUser) {
-            return false
-        }
-
-        const authorComments = this.getAuthorCommentsCount(prAuthor)
-        const localUserComments = this.getAuthorCommentsCount(localUser)
-
-        return localUserComments !== 0 && authorComments < localUserComments
-    }
+    isViewedByUser(localUser): boolean {}
 
     isApproved(): boolean {}
     isApprovedByUser(login): boolean {}

@@ -17,7 +17,6 @@ export class GLProject extends GitRepository {
     webUrl: string
     author: GLUser
     mergeRequests: GLMergeRequest[] = []
-    notFound: boolean = false
 
     getOwner(): string {
         return this.fullPath.split('/')[0];
@@ -26,10 +25,6 @@ export class GLProject extends GitRepository {
     getName(): string {
         const names = this.fullPath.split('/')
         return names[names.length - 1];
-    }
-
-    getTitle() {
-        return this.title
     }
 
     getUrl() {
@@ -42,10 +37,6 @@ export class GLProject extends GitRepository {
 
     getPullRequests(): GitPullRequest[] {
         return this.mergeRequests
-    }
-
-    isNotFound(): boolean {
-        return this.notFound
     }
 }
 
@@ -70,17 +61,29 @@ export class GLMergeRequest extends GitPullRequest{
             .length !== 0
     }
 
+    isViewedByUser(localUser): boolean {
+        const prAuthor = this.getAuthor().getUsername()
+        if (prAuthor === localUser) {
+            return false
+        }
+
+        const prAuthorComments = this.getAuthorCommentsCount(prAuthor)
+        const reviewersComments = this.getReviewersCommentsCount()
+
+        return reviewersComments !== 0 && prAuthorComments < reviewersComments
+    }
+
     getApprovesCount(): number {
         return this.approvedBy.length
     }
 
-    getReviewersCommentsCount(authorLogin): number {
-        return this.discussions.length - this.getAuthorCommentsCount(authorLogin)
+    getReviewersCommentsCount(): number {
+        return this.discussions.length - this.getAuthorCommentsCount(this.getAuthor().getUsername())
     }
 
-    getAuthorCommentsCount(authorLogin): number {
+    getAuthorCommentsCount(login): number {
         return this.discussions
-            .filter(discus => discus.author.getUsername() === authorLogin)
+            .filter(discus => discus.getAuthor().getUsername() === login)
             .length
     }
 
@@ -114,6 +117,11 @@ export class GLMergeRequest extends GitPullRequest{
 }
 
 export class GLDiscussion extends GitReview {
-    resolved
+
+    resolved: boolean
     author: GLUser
+
+    getAuthor(): GitUser {
+        return this.author
+    }
 }

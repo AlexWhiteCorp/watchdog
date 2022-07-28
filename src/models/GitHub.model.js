@@ -25,8 +25,6 @@ export class GHRepo extends GitRepository{
     updated_at: string;
     pullRequests: GHPullRequest[] = [];
 
-    notFound: boolean = false
-
     getOwner(): string {
         return this.full_name.split('/')[0];
     }
@@ -42,10 +40,6 @@ export class GHRepo extends GitRepository{
 
     getPullRequests(): GitPullRequest[] {
         return this.pullRequests
-    }
-
-    isNotFound(): boolean {
-        return this.notFound
     }
 
     static of(json): GHRepo {
@@ -81,6 +75,18 @@ export class GHPullRequest extends GitPullRequest{
         return this.reviewers
             .filter(review => review.isApproveReview() && review.getAuthor().getUsername() === login)
             .length !== 0
+    }
+
+    isViewedByUser(localUser): boolean {
+        const prAuthor = this.getAuthor().getUsername()
+        if (prAuthor === localUser) {
+            return false
+        }
+
+        const authorComments = this.getAuthorCommentsCount(prAuthor)
+        const localUserComments = this.getAuthorCommentsCount(localUser)
+
+        return localUserComments !== 0 && authorComments < localUserComments
     }
 
     getApprovesCount(): number {
