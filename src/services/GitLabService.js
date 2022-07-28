@@ -23,13 +23,13 @@ class GitLabService extends GitService {
 
     async getOrganization(orgInfo: OrganizationConfig): GitOrganization {
         const groups = await Promise.all(
-            orgInfo.groups.map(group => this.#fetchGroup(orgInfo.organization, group))
+            orgInfo.groups.map(group => this.fetchGroup(orgInfo.organization, group))
         )
 
         return new GitOrganization(orgInfo.organization, this.authUser, this.host, groups)
     }
 
-    async #fetchGroup(organization: string, group: GroupConfig): RepositoriesGroup {
+    async fetchGroup(organization: string, group: GroupConfig): RepositoriesGroup {
         let owner = group.subGroupName
             ? `${organization}/${group.subGroupName}`
             : organization

@@ -33,7 +33,7 @@ class GitLabClient extends ApiClient {
             .post(GRAPHQL_API_PATH, payload)
             .then(response => ModelMapper.map(response.data.data.project, GLProject))
             .catch((e) => {
-                window.logger.error(GitLabClient.name, e.message)
+                console.log(e)
                 const repo = new GLProject()
                 repo.fullPath = fullPath
                 repo.notFound = true
