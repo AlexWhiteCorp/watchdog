@@ -12,8 +12,10 @@
 </template>
 
 <script>
-import GitHubService from "@/services/GitHubService";
-import {isAllApproved} from "@/utils";
+import {isAllApproved} from "@/utils/gitUtils";
+import GitServiceFactory from "@/services/GitServiceFactory";
+import {OrganizationConfig} from "@/models/Config.model";
+import ModelMapper from "@/utils/ModelMapper";
 
 const REFRESH_DELAY = 5 * 60 * 1000
 let config = null
@@ -42,14 +44,14 @@ export default {
     },
 
     loadReposInfo: async function () {
-      if(this.isPaused) {
+      if (this.isPaused) {
         return
       }
 
       const organizations = await Promise.all(
           config.organizations.map(async (orgInfo) => {
-            const githubService = await GitHubService.getInstance(orgInfo)
-            return githubService.getOrganization(orgInfo)
+            const gitService = await GitServiceFactory.getInstance(orgInfo)
+            return gitService.getOrganization(orgInfo)
           })
       )
 
@@ -75,7 +77,10 @@ export default {
   created() {
     window.loadConfigs((err, data) => {
       if (!err) {
-        config = data
+        config = {
+          organizations: data.organizations.map(org => ModelMapper.map(org, OrganizationConfig)),
+          ...config
+        }
         this.loadReposInfo()
       } else {
         this.onRefreshed(null, err)

@@ -1,14 +1,15 @@
 <template>
-  <div v-if="repos && repos.length" class="repos-group">
-    <template v-for="repo in repos" :key="repo.getName()">
+  <div v-if="repoGroup && repoGroup.repositories.length" class="repos-group">
+    <template v-for="repo in repoGroup.repositories" :key="repo.getName()">
       <repo-item :organization="organization" :repo="repo"></repo-item>
     </template>
   </div>
-  <div v-else>Loading repositories...</div>
+  <div v-else style="text-align: center">Loading repositories...</div>
 </template>
 
 <script>
 import RepoItem from "@/components/RepoItem";
+import {GitOrganization, RepositoriesGroup} from "@/models/Git.model";
 
 export default {
   name: 'ReposGroup',
@@ -16,8 +17,8 @@ export default {
     'repo-item': RepoItem
   },
   props: {
-    organization: Object,
-    repos: Array
+    organization: GitOrganization,
+    repoGroup: RepositoriesGroup
   }
 }
 </script>

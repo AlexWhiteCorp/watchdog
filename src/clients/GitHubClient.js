@@ -1,29 +1,11 @@
-import axios from "axios";
-import {GHPullRequest, GHRepo, GHReview, GHUser} from "@/models/GitHubModels";
+import {GHPullRequest, GHRepo, GHReview, GHUser} from "@/models/GitHub.model";
+import ApiClient from "@/clients/ApiClient";
+import {OrganizationConfig} from "@/models/Config.model";
 
-const GIT_HUB_API_URL = 'https://api.github.com'
+class GitHubClient extends ApiClient {
 
-class GitHubClient {
-    constructor(authToken) {
-        this.api = axios.create({
-            baseURL: GIT_HUB_API_URL,
-            headers: {
-                'Authorization': 'token ' + authToken,
-                'Content-Type': 'application/json'
-            },
-            timeout: 10000,
-            adapter: require('axios/lib/adapters/http')
-        })
-
-        this.api.interceptors.request.use(
-            (config) => {
-                const method = config.method.toUpperCase()
-                const path = config.url
-                window.logger.debug(GitHubClient.name, `${method} ${path}`)
-                return config;
-        }, (error) => {
-                return Promise.reject(error);
-        });
+    constructor(authToken: string, basePath: string) {
+        super(GitHubClient, 'token ' + authToken, basePath);
     }
 
     getSelfUser() {
@@ -31,7 +13,7 @@ class GitHubClient {
             .then(response => GHUser.of(response.data))
     }
 
-    getRepoByName(organization, repoName) {
+    getRepoByName(organization: OrganizationConfig, repoName: string) {
         return this.api.get(`/repos/${organization}/${repoName}`)
             .then(response => GHRepo.of(response.data))
             .catch((e) => {
@@ -43,17 +25,17 @@ class GitHubClient {
             })
     }
 
-    getRepoPRs(organization, repoName) {
+    getRepoPRs(organization: OrganizationConfig, repoName: string) {
         return this.api.get(`/repos/${organization}/${repoName}/pulls`)
             .then(response => response.data.map(pr => GHPullRequest.of(pr)))
     }
 
-    getPullRequest(organization, repoName, prNumber) {
+    getPullRequest(organization: OrganizationConfig, repoName: string, prNumber: number) {
         return this.api.get(`/repos/${organization}/${repoName}/pulls/${prNumber}`)
             .then(response => GHPullRequest.of(response.data))
     }
 
-    getPullRequestReviews(organization, repoName, prNumber) {
+    getPullRequestReviews(organization: OrganizationConfig, repoName: string, prNumber: number) {
         return this.api.get(`/repos/${organization}/${repoName}/pulls/${prNumber}/reviews`)
             .then(response => response.data.map(review => GHReview.of(review)))
     }

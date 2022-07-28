@@ -37,9 +37,7 @@ import MenuItem from "@/components/MenuItem";
 import OrganizationPage from "@/components/OrganizationPage";
 import MenuDelimiter from "@/components/MenuDelimiter";
 import MenuNavbar from "@/components/MenuNavbar";
-import {isMac, isWindows} from "@/utils";
-
-const GITHUB_URL = 'https://github.com/'
+import {isMac, isWindows} from "@/utils/utils";
 
 export default {
   name: 'App',
@@ -83,7 +81,7 @@ export default {
       return item.organization
     },
     onItemTitleClick: function (item) {
-      return GITHUB_URL + item.organization
+      return item.getUrl()
     },
     onItemChange: function (currOrgIndex) {
       this.currOrgIndex = currOrgIndex

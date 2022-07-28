@@ -5,7 +5,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import TrayWindow from "@/TrayWindow";
 import * as path from "path";
-import {isMac, isWindows} from "@/utils";
+import {isMac, isWindows} from "@/utils/utils";
 import WindowsPlatform from "@/platform/WindowsPlatform";
 import MacOSPlatform from "@/platform/MacOSPlatform";
 import log from "electron-log";
@@ -81,6 +81,10 @@ ipcMain.on('log-debug', (event, args) => {
 
 ipcMain.on( 'log-info', (event, args) => {
   log.info(`[${args[0]}]: ${JSON.stringify(args[1])}`)
+})
+
+ipcMain.on( 'log-error', (event, args) => {
+  log.error(`[${args[0]}]: ${JSON.stringify(args[1])}`)
 })
 
 ipcMain.on('show-notification', (event, args) => {

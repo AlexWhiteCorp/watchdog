@@ -1,20 +1,26 @@
 import GitHubClient from "@/clients/GitHubClient";
+import GitService from "@/services/GitService";
+import {GitOrganization, RepositoriesGroup} from "@/models/Git.model";
+import {GHUser} from "@/models/GitHub.model";
+import {GroupConfig, OrganizationConfig} from "@/models/Config.model";
 
-const instances = {}
+const GIT_HUB_API_URL = 'https://api.github.com'
+const GIT_HUB_URL = 'https://github.com'
 
-class GitHubService {
+class GitHubService extends GitService{
 
-    authUser
+    authUser: GHUser
 
     constructor(authToken) {
-        this.client = new GitHubClient(authToken);
+        super()
+        this.client = new GitHubClient(authToken, GIT_HUB_API_URL)
     }
 
     getSelfUser() {
         return this.client.getSelfUser()
     }
 
-    async getOrganization(orgInfo) {
+    async getOrganization(orgInfo): GitOrganization {
         if (this.authUser) {
             const repos = await Promise.all(
                 orgInfo.groups.map(reposGroup =>
@@ -22,22 +28,15 @@ class GitHubService {
                 )
             )
 
-            return {
-                organization: orgInfo.organization,
-                user: this.authUser,
-                repositories: repos,
-                credsError: false
-            }
+            const groups = repos.map(repos => new RepositoriesGroup(repos))
+
+            return new GitOrganization(orgInfo.organization, this.authUser, GIT_HUB_URL, groups)
         } else {
-            return {
-                organization: orgInfo.organization,
-                credsError: true
-            }
+            return new GitOrganization(orgInfo.organization, null, null, true)
         }
     }
 
-    async getRepos(organization, reposGroup) {
-        window.log(`Fetching info about repositories: [${reposGroup.repositories}]`)
+    async getRepos(organization:OrganizationConfig, reposGroup: GroupConfig) {
         return Promise.all(
             reposGroup.repositories.map(repoName => this.#fetchRepo(organization, repoName, reposGroup.fetchPRs))
         )
@@ -82,23 +81,6 @@ class GitHubService {
                         return pr
                     })
             })
-    }
-
-    static async getInstance(orgInfo) {
-        let githubService = instances[orgInfo.organization]
-        if (githubService === undefined) {
-            githubService = new GitHubService(orgInfo.accessToken)
-
-            try {
-                githubService.authUser = await githubService.getSelfUser()
-            } catch (e) {
-                githubService.authUser = null
-            }
-
-            instances[orgInfo.organization] = githubService
-        }
-
-        return githubService
     }
 }
 

@@ -1,10 +1,10 @@
 <template>
   <div class="repo-menu-wrapper">
-    <template v-for="(pr, i) in repo.pullRequests" :key="pr.number">
-      <menu-item :url="pr.html_url">
+    <template v-for="(pr, i) in repo.getPullRequests()" :key="pr.getId()">
+      <menu-item :url="pr.getUrl()">
         <pull-request :org="organization" :pr="pr"></pull-request>
       </menu-item>
-      <menu-delimiter v-if="i !== repo.pullRequests.length - 1" class="delimiter"></menu-delimiter>
+      <menu-delimiter v-if="i !== repo.getPullRequests().length - 1" class="delimiter"></menu-delimiter>
     </template>
   </div>
 </template>
@@ -13,13 +13,13 @@
 import MenuItem from "@/components/MenuItem";
 import PullRequest from "@/components/PullRequest";
 import Delimiter from "@/components/MenuDelimiter";
-import {GHRepo} from "@/models/GitHubModels";
+import {GitOrganization, GitRepository} from "@/models/Git.model";
 
 export default {
   name: 'RepoMenu',
   props: {
-    organization: Object,
-    repo: GHRepo
+    organization: GitOrganization,
+    repo: GitRepository
   },
   components: {
     'menu-item': MenuItem,

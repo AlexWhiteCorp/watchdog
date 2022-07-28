@@ -3,12 +3,12 @@
        @mouseover="onMouseOver"
        @mouseleave="onMouseLeave"
        @click="showRepoInfo = false">
-    <menu-item class="menu-item-title-wrapper" :url="repo.html_url" title="Click to open in Browser">
+    <menu-item class="menu-item-title-wrapper" :url="repo.getUrl()" title="Click to open in Browser">
       <div v-if="totalPRs" class="repo-stat"
            title="approved PRs/total opened PRs">({{ approvedPRs }}/{{totalPRs}})</div>
-      <div class="repo-name" >{{ title }}</div>
+      <div class="repo-name">{{ title }}</div>
     </menu-item>
-    <template v-if="!repo.notFound && repo.pullRequests.length !== 0" >
+    <template v-if="!repo.isNotFound() && repo.getPullRequests().length !== 0" >
       <repo-menu v-if="showRepoInfo" :organization="organization" :repo="repo"></repo-menu>
     </template>
   </div>
@@ -17,12 +17,13 @@
 <script>
 import RepoMenu from "@/components/RepoMenu";
 import MenuItem from "@/components/MenuItem";
+import {GitOrganization, GitRepository} from "@/models/Git.model";
 
 export default {
   name: 'RepoItem',
   props: {
-    organization: Object,
-    repo: Object
+    organization: GitOrganization,
+    repo: GitRepository
   },
   components: {
     'repo-menu': RepoMenu,
@@ -36,17 +37,17 @@ export default {
   },
   computed: {
     title: function () {
-      if(!this.repo.notFound) {
+      if(!this.repo.isNotFound()) {
         return this.repo.getName()
       }
 
       return this.repo.getName() + ' [Not Found]'
     },
     totalPRs: function () {
-      return this.repo.pullRequests.length
+      return this.repo.getPullRequests().length
     },
     approvedPRs: function () {
-      return this.repo.pullRequests
+      return this.repo.getPullRequests()
           .filter(pr => pr.isApproved())
           .length
     }
@@ -74,8 +75,8 @@ export default {
 
 .menu-item-title-wrapper {
   display: grid;
-  grid-template-areas: "stat name";
-  grid-template-columns: 40px auto;
+  grid-template-areas: "stat name .";
+  grid-template-columns: 40px auto 40px;
   padding: 2px 10px;
   cursor: default;
 
@@ -94,6 +95,7 @@ export default {
   grid-area: name;
   cursor: pointer;
 
+  text-align: center;
   white-space: nowrap;
 }
 </style>
