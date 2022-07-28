@@ -1,10 +1,10 @@
 <template>
   <div class="menu-navbar">
-    <div class="nav-btn menu-navbar-prev" @click="prevItem">⬅</div>
+    <div v-if="items.length > 1" class="nav-btn menu-navbar-prev" @click="prevItem">⬅</div>
     <menu-item class="menu-navbar-curr-org" :url="onItemTitleClick(currItem)">
       {{ getItemTitle(currItem) }}
     </menu-item>
-    <div class="nav-btn menu-navbar-next" @click="nextItem">⬅</div>
+    <div v-if="items.length > 1" class="nav-btn menu-navbar-next" @click="nextItem">⬅</div>
   </div>
 </template>
 
