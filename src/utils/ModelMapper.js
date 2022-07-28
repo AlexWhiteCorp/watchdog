@@ -3,6 +3,7 @@ import {GLDiscussion, GLMergeRequest, GLProject, GLUser} from "@/models/GitLab.m
 const schema = {
     [GLProject.name]: (json, obj: GLProject) => {
         obj.mergeRequests = json.mergeRequests.edges.map(mr => map(mr.node, GLMergeRequest))
+        obj.author = map(json.author, GLUser)
         return obj
     },
     [GLMergeRequest.name]: (json, obj: GLMergeRequest) => {
@@ -10,12 +11,13 @@ const schema = {
         obj.reviewers = json.reviewers.edges.map(reviewer => map(reviewer.node, GLUser))
         obj.approvedBy = json.approvedBy.edges.map(reviewer => map(reviewer.node, GLUser))
         obj.discussions = json.discussions.edges
-            .map(discus => map(discus.node, GLDiscussion))
-            .filter(discus => discus.resolvable)
+            .flatMap(discus => discus.node.notes.edges)
+            .map(comment => map(comment.node, GLDiscussion))
+            .filter(discus => !discus.system)
         return obj
     },
     [GLDiscussion.name]: (json, obj: GLDiscussion) => {
-        obj.author = json.notes.edges.map(note => map(note.node.author, GLUser))[0]
+        obj.author = map(json.author, GLUser)
         return obj
     }
 
