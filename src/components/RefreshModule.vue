@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import {isAllApproved} from "@/utils/gitUtils";
+import {isNeedAttention} from "@/utils/gitUtils";
 import GitServiceFactory from "@/services/GitServiceFactory";
 import {OrganizationConfig} from "@/models/Config.model";
 import ModelMapper from "@/utils/ModelMapper";
@@ -67,7 +67,7 @@ export default {
         window.setAppIcon('BLACK')
       }
 
-      if (isAllApproved(organizations)) {
+      if (isNeedAttention(organizations)) {
         window.setAppIcon('BLACK')
       } else {
         window.setAppIcon('BLUE')
