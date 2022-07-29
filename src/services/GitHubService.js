@@ -20,67 +20,20 @@ class GitHubService extends GitService{
         return this.client.getSelfUser()
     }
 
-    async getOrganization(orgInfo): GitOrganization {
-        if (this.authUser) {
-            const repos = await Promise.all(
-                orgInfo.groups.map(reposGroup =>
-                    this.getRepos(orgInfo.organization, reposGroup)
-                )
-            )
-
-            const groups = repos.map(repos => new RepositoriesGroup(repos))
-
-            return new GitOrganization(orgInfo.organization, this.authUser, GIT_HUB_URL, groups)
-        } else {
-            return new GitOrganization(orgInfo.organization, null, null, true)
-        }
-    }
-
-    async getRepos(organization:OrganizationConfig, reposGroup: GroupConfig) {
-        return Promise.all(
-            reposGroup.repositories.map(repoName => this.#fetchRepo(organization, repoName, reposGroup.fetchPRs))
+    async getOrganization(orgInfo: OrganizationConfig): GitOrganization {
+        const groups = await Promise.all(
+            orgInfo.groups.map(group => this.fetchGroup(orgInfo.organization, group))
         )
+
+        return new GitOrganization(orgInfo.organization, this.authUser, GIT_HUB_URL, groups)
     }
 
-    #fetchRepo(organization, repoName, fetchPRs) {
-        return this.client.getRepoByName(organization, repoName)
-            .then(repo => {
-                if(!repo.notFound && fetchPRs !== false) {
-                    return this.#fetchPRs(repo)
-                }
+    async fetchGroup(organization: string, group: GroupConfig): RepositoriesGroup {
+        const repositories = await Promise.all(
+            group.repositories.map(repo => this.client.getRepository(organization, repo))
+        )
 
-                return repo
-            })
-    }
-
-    #fetchPRs(repo) {
-        return this.client.getRepoPRs(repo.getOwner(), repo.getName())
-            .then(async (prs) => {
-                repo.pullRequests = await Promise.all(
-                    prs
-                        .filter(pr => pr.title.indexOf('Bump') === -1)
-                        .map(pr => this.#fetchPR(repo, pr))
-                )
-                repo.pullRequests = repo.pullRequests
-                    .filter(pr => !pr.draft)
-                    .filter(pr => pr.isOwner(this.authUser.login) || pr.isReviewer(this.authUser.login))
-                return repo
-            })
-    }
-
-    #fetchPR(repo, pr) {
-        return this.client.getPullRequest(repo.getOwner(), repo.getName(), pr.number)
-            .then(pr => {
-                if(pr.draft) {
-                    return pr
-                }
-
-                return this.client.getPullRequestReviews(repo.getOwner(), repo.getName(), pr.number)
-                    .then(reviewers => {
-                        pr.reviewers = reviewers
-                        return pr
-                    })
-            })
+        return new RepositoriesGroup(repositories)
     }
 }
 
