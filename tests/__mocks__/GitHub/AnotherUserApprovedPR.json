@@ -1,0 +1,86 @@
+{
+  "data": {
+    "repository": {
+      "name": "repository-2",
+      "owner": {
+        "login": "NotAlexWhiteCorp-1"
+      },
+      "url": "https://github.com/NotAlexWhiteCorp-1/repository-2",
+      "pullRequests": {
+        "edges": [
+          {
+            "node": {
+              "number": 1,
+              "title": "Pull Request Title",
+              "url": "https://github.com/NotAlexWhiteCorp-1/repository-2/pull/1",
+              "isDraft": false,
+              "updatedAt": "2022-07-28T20:06:01Z",
+              "author": {
+                "login": "NotAlexWhiteCorp-1"
+              },
+              "reviewThreads": {
+                "edges": [
+                  {
+                    "node": {
+                      "isResolved": true,
+                      "comments": {
+                        "edges": [
+                          {
+                            "node": {
+                              "author": {
+                                "login": "AlexWhiteCorp"
+                              }
+                            }
+                          },
+                          {
+                            "node": {
+                              "author": {
+                                "login": "NotAlexWhiteCorp-1"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "reviewRequests": {
+                "edges": [
+                ]
+              },
+              "reviews": {
+                "edges": [
+                  {
+                    "node": {
+                      "state": "COMMENTED",
+                      "author": {
+                        "login": "AlexWhiteCorp"
+                      }
+                    }
+                  },
+                  {
+                    "node": {
+                      "state": "COMMENTED",
+                      "author": {
+                        "login": "AlexWhiteCorp"
+                      }
+                    }
+                  },
+                  {
+                    "node": {
+                      "state": "APPROVED",
+                      "author": {
+                        "login": "AlexWhiteCorp"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

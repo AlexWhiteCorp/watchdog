@@ -51,24 +51,6 @@
                         "edges": [
                           {
                             "node": {
-                              "system": false,
-                              "body": "Single comment",
-                              "author": {
-                                "username": "AlexWhiteCorp"
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "node": {
-                      "resolved": false,
-                      "notes": {
-                        "edges": [
-                          {
-                            "node": {
                               "system": true,
                               "body": "requested review from @AlexWhiteCorp",
                               "author": {
