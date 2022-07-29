@@ -1,113 +1,75 @@
-import {GitPullRequest, GitRepository, GitReview, GitUser} from "@/models/Git.model";
+import {GitComment, GitDiscussion, GitPullRequest, GitRepository, GitReview, GitUser} from "@/models/Git.model";
 
 export class GHUser extends GitUser{
 
     login: string;
 
-    getUsername(): string {
-        return this.login
+    constructor(login: string) {
+        super();
+        this.login = login;
     }
 
-    static of(json): GHUser {
-        const instance = new GHUser()
-        instance.login = json.login
-
-        return instance
+    getUsername(): string {
+        return this.login
     }
 
 }
 
 export class GHRepo extends GitRepository{
 
-    html_url: string;
-    full_name: string;
-    updated_at: string;
+    name: string;
+    url: string
+    owner: GHUser;
     pullRequests: GHPullRequest[] = [];
 
-    getOwner(): string {
-        return this.full_name.split('/')[0];
-    }
-
     getName(): string {
-        return this.full_name.split('/')[1];
+        return this.name
+    }
+    
+    getUrl(): string {
+        return this.url
     }
 
-
-    getUrl(): string {
-        return this.html_url
+    getAuthor(): GHUser {
+        return this.owner
     }
 
     getPullRequests(): GitPullRequest[] {
         return this.pullRequests
-    }
-
-    static of(json): GHRepo {
-        const instance = new GHRepo()
-        instance.html_url = json.html_url
-        instance.full_name = json.full_name
-        instance.updated_at = json.updated_at
-
-        return instance
     }
 }
 
 export class GHPullRequest extends GitPullRequest{
 
     number: string;
-    html_url: string;
     title: string;
-    draft: boolean;
-    user: GHUser;
-    updated_at: string;
-    review_comments: number;
+    url: string;
+    isDraft: boolean;
+    updatedAt: string;
 
-    reviewers: GHReview[] = []
-    requested_reviewers: GHUser[] = [];
+    author: GHUser;
+    reviews: GHReview[] = []
+    reviewRequests: GHUser[] = [];
+    reviewThreads: GHDiscussion[] = [];
 
     isApproved(): boolean {
-        return this.reviewers
+        return this.reviews
             .filter(review => review.isApproveReview())
             .length !== 0
     }
 
     isApprovedByUser(login): boolean {
-        return this.reviewers
+        return this.reviews
             .filter(review => review.isApproveReview() && review.getAuthor().getUsername() === login)
             .length !== 0
     }
 
-    isViewedByUser(localUser): boolean {
-        const prAuthor = this.getAuthor().getUsername()
-        if (prAuthor === localUser) {
-            return false
-        }
-
-        const authorComments = this.getAuthorCommentsCount(prAuthor)
-        const localUserComments = this.getAuthorCommentsCount(localUser)
-
-        return localUserComments !== 0 && authorComments < localUserComments
-    }
-
     getApprovesCount(): number {
         return new Set(
-            this.reviewers
+            this.reviews
                 .filter(review => review.isApproveReview())
                 .map(review => review.getAuthor().getUsername())
         ).size
-    }
-
-    getLastUpdate() {
-        return this.updated_at
-    }
-
-    getReviewersCommentsCount(authorLogin): number {
-        return this.review_comments - this.getAuthorCommentsCount(authorLogin)
-    }
-
-    getAuthorCommentsCount(authorLogin): number {
-        return this.reviewers
-            .filter(review => review.isComment() && review.getAuthor().getUsername() === authorLogin)
-            .length
     }
 
     getId() {
@@ -119,62 +81,65 @@ export class GHPullRequest extends GitPullRequest{
     }
 
     getUrl() {
-        return this.html_url
+        return this.url
     }
 
     getAuthor() {
-        return this.user
+        return this.author
+    }
+
+    getLastUpdate() {
+        return this.updatedAt
     }
 
     getRequestedReviewers(): GHUser[] {
-        return this.requested_reviewers
+        return this.reviewRequests
     }
 
     getReviews(): GitReview[] {
-        return this.reviewers
+        return this.reviews
     }
 
-    static of(json): GHPullRequest {
-        const instance = new GHPullRequest()
-        instance.number = json.number
-        instance.html_url = json.html_url
-        instance.title = json.title
-        instance.draft = json.draft
-        instance.updated_at = json.updated_at
-        instance.review_comments = json.review_comments
-
-        instance.user = GHUser.of(json.user)
-        instance.requested_reviewers = json.requested_reviewers.map(r => GHUser.of(r))
-
-        return instance;
+    getDiscussions(): GitDiscussion[] {
+        return this.reviewThreads
     }
 }
 
 export class GHReview extends GitReview {
 
     static APPROVED = "APPROVED";
-    static COMMENTED = "COMMENTED";
 
-    user: GHUser;
     state: string;
-    body: string;
-
-    static of(json): GHReview {
-        const instance = Object.setPrototypeOf(json, GHReview.prototype)
-        instance.user = GHUser.of(json.user)
-
-        return instance;
-    }
-
+    author: GHUser;
+    
     getAuthor(): GitUser {
-        return this.user
+        return this.author
     }
 
     isApproveReview() {
         return this.state === GHReview.APPROVED
     }
+}
 
-    isComment() {
-        return this.state === GHReview.COMMENTED
+export class GHDiscussion extends GitDiscussion {
+
+    isResolved: boolean
+    comments: GHComment[]
+
+    isThreadResolved(): boolean {
+        return this.isResolved
+    }
+
+    getLastCommentAuthor(): GHUser {
+        return this.comments[this.comments.length - 1].getAuthor()
+    }
+}
+
+export class GHComment extends GitComment {
+
+    author: GHUser
+
+    getAuthor(): GitUser {
+        return this.author
     }
 }
