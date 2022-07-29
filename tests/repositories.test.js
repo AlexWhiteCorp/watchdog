@@ -1,8 +1,20 @@
 import GitLabService from "@/services/GitLabService";
-import {isAllApproved} from "@/utils/gitUtils";
+import {isNeedAttention} from "@/utils/gitUtils";
 import {GitUser} from "@/models/Git.model";
+import GitHubService from "@/services/GitHubService";
 
-const ORG_INFO_TEMPLATE = {
+const GITHUB_ORG_INFO_TEMPLATE = {
+    organization: 'AlexWhiteCorp',
+    groups: [
+        {
+            repositories: [
+                'repository-1'
+            ]
+        }
+    ]
+}
+
+const GITLAB_ORG_INFO_TEMPLATE = {
     organization: 'AlexWhiteCorp',
     groups: [
         {
@@ -15,6 +27,114 @@ const ORG_INFO_TEMPLATE = {
 
 const PRESET = [
     {
+        service: 'GitHub',
+        serviceClass: GitHubService,
+        author: 'AlexWhiteCorp',
+        tests: [
+            {
+                errorFromClient: true,
+                description: 'Repository not found or Bad Request/Network Error',
+                orgInfo: GITHUB_ORG_INFO_TEMPLATE,
+                expected: {
+                    getOrgUrl: 'https://github.com/AlexWhiteCorp',
+
+                    getName: 'repository-1',
+                    getPullRequests: 0,
+                    isNotFound: true,
+
+                    isNeedAttention: true
+                }
+            },
+            {
+                description: 'Repository contains Local user Pull Request(new)',
+                mockJson: 'AuthorUserNewPR',
+                orgInfo: GITHUB_ORG_INFO_TEMPLATE,
+                expected: {
+                    getOrgUrl: 'https://github.com/AlexWhiteCorp',
+
+                    getName: 'repository-1',
+                    getRepoUrl: 'https://github.com/AlexWhiteCorp/repository-1',
+                    getPullRequests: 1,
+                    isNotFound: false,
+
+                    isOwner: true,
+                    isReviewer: false,
+                    isViewedByUser: false,
+                    isApproved: false,
+                    isApprovedByUser: false,
+                    getApprovesCount: 0,
+                    getTotalDiscussionsCount: 0,
+                    getActiveDiscussionsCount: 0,
+                    isNeedAttention: false,
+                    getPRUrl: 'https://github.com/AlexWhiteCorp/repository-1/pull/1',
+                    getPRId: 1,
+                    getPRTitle: 'Pull Request Title',
+                    getPRLastUpdate: '2022-07-28T20:06:01Z',
+                }
+            },
+            {
+                description: 'Project contains Another user Pull Request(reviewed without approve)',
+                mockJson: 'AnotherUserReviewedPR',
+                orgInfo: {
+                    ...GITHUB_ORG_INFO_TEMPLATE,
+                    organization: 'NotAlexWhiteCorp-1'
+                },
+                expected: {
+                    getOrgUrl: 'https://github.com/NotAlexWhiteCorp-1',
+
+                    getName: 'repository-2',
+                    getRepoUrl: 'https://github.com/NotAlexWhiteCorp-1/repository-2',
+                    getPullRequests: 1,
+                    isNotFound: false,
+
+                    isOwner: false,
+                    isReviewer: true,
+                    isViewedByUser: true,
+                    isApproved: false,
+                    isApprovedByUser: false,
+                    getApprovesCount: 0,
+                    getTotalDiscussionsCount: 4,
+                    getActiveDiscussionsCount: 2,
+                    isNeedAttention: true,
+                    getPRUrl: 'https://github.com/NotAlexWhiteCorp-1/repository-2/pull/1',
+                    getPRId: 1,
+                    getPRTitle: 'Pull Request Title',
+                    getPRLastUpdate: '2022-07-28T20:06:01Z',
+                }
+            },
+            {
+                description: 'Project contains Another user Pull Request(approved)',
+                mockJson: 'AnotherUserApprovedPR',
+                orgInfo: {
+                    ...GITHUB_ORG_INFO_TEMPLATE,
+                    organization: 'NotAlexWhiteCorp-1'
+                },
+                expected: {
+                    getOrgUrl: 'https://github.com/NotAlexWhiteCorp-1',
+
+                    getName: 'repository-2',
+                    getRepoUrl: 'https://github.com/NotAlexWhiteCorp-1/repository-2',
+                    getPullRequests: 1,
+                    isNotFound: false,
+
+                    isOwner: false,
+                    isReviewer: true,
+                    isViewedByUser: false,
+                    isApproved: true,
+                    isApprovedByUser: true,
+                    getApprovesCount: 1,
+                    getTotalDiscussionsCount: 1,
+                    getActiveDiscussionsCount: 0,
+                    isNeedAttention: true,
+                    getPRUrl: 'https://github.com/NotAlexWhiteCorp-1/repository-2/pull/1',
+                    getPRId: 1,
+                    getPRTitle: 'Pull Request Title',
+                    getPRLastUpdate: '2022-07-28T20:06:01Z',
+                }
+            }
+        ]
+    },
+    {
         service: 'GitLab',
         serviceClass: GitLabService,
         author: 'AlexWhiteCorp',
@@ -22,26 +142,24 @@ const PRESET = [
             {
                 errorFromClient: true,
                 description: 'Project not found or Bad Request/Network Error',
-                orgInfo: ORG_INFO_TEMPLATE,
+                orgInfo: GITLAB_ORG_INFO_TEMPLATE,
                 expected: {
                     getOrgUrl: 'https://gitlab.com/AlexWhiteCorp',
 
-                    getOwner: 'AlexWhiteCorp',
                     getName: 'project-1',
                     getPullRequests: 0,
                     isNotFound: true,
 
-                    isAllApproved: true
+                    isNeedAttention: true
                 }
             },
             {
                 description: 'Project contains Local user Merge Request(new)',
                 mockJson: 'AuthorUserNewMR',
-                orgInfo: ORG_INFO_TEMPLATE,
+                orgInfo: GITLAB_ORG_INFO_TEMPLATE,
                 expected: {
                     getOrgUrl: 'https://gitlab.com/AlexWhiteCorp',
 
-                    getOwner: 'AlexWhiteCorp',
                     getName: 'project-1',
                     getRepoUrl: 'https://gitlab.com/AlexWhiteCorp/project-1',
                     getPullRequests: 1,
@@ -53,9 +171,9 @@ const PRESET = [
                     isApproved: false,
                     isApprovedByUser: false,
                     getApprovesCount: 0,
-                    getReviewersCommentsCount: 0,
-                    getAuthorCommentsCount: 0,
-                    isAllApproved: false,
+                    getTotalDiscussionsCount: 0,
+                    getActiveDiscussionsCount: 0,
+                    isNeedAttention: false,
                     getPRUrl: 'https://gitlab.com/AlexWhiteCorp/project-1/-/merge_requests/1',
                     getPRId: 1,
                     getPRTitle: 'Merge Request 1 Title',
@@ -66,13 +184,12 @@ const PRESET = [
                 description: 'Project contains Another user Merge Request(reviewed without approve)',
                 mockJson: 'AnotherUserReviewedMR',
                 orgInfo: {
-                    ...ORG_INFO_TEMPLATE,
+                    ...GITLAB_ORG_INFO_TEMPLATE,
                     organization: 'NotAlexWhiteCorp-1'
                 },
                 expected: {
                     getOrgUrl: 'https://gitlab.com/NotAlexWhiteCorp-1',
 
-                    getOwner: 'NotAlexWhiteCorp-1',
                     getName: 'project-2',
                     getRepoUrl: 'https://gitlab.com/NotAlexWhiteCorp-1/project-2',
                     getPullRequests: 1,
@@ -84,26 +201,25 @@ const PRESET = [
                     isApproved: false,
                     isApprovedByUser: false,
                     getApprovesCount: 0,
-                    getReviewersCommentsCount: 3,
-                    getAuthorCommentsCount: 0,
-                    isAllApproved: true,
+                    getTotalDiscussionsCount: 4,
+                    getActiveDiscussionsCount: 2,
                     getPRUrl: 'https://gitlab.com/NotAlexWhiteCorp-1/project-2/-/merge_requests/2',
                     getPRId: 2,
                     getPRTitle: 'Merge Request 2 Title',
                     getPRLastUpdate: '2022-07-24T11:11:49Z',
+                    isNeedAttention: true,
                 }
             },
             {
                 description: 'Project contains Another user Merge Request(approved)',
                 mockJson: 'AnotherUserApprovedMR',
                 orgInfo: {
-                    ...ORG_INFO_TEMPLATE,
+                    ...GITLAB_ORG_INFO_TEMPLATE,
                     organization: 'NotAlexWhiteCorp-1'
                 },
                 expected: {
                     getOrgUrl: 'https://gitlab.com/NotAlexWhiteCorp-1',
 
-                    getOwner: 'NotAlexWhiteCorp-1',
                     getName: 'project-2',
                     getRepoUrl: 'https://gitlab.com/NotAlexWhiteCorp-1/project-2',
                     getPullRequests: 1,
@@ -111,17 +227,17 @@ const PRESET = [
 
                     isOwner: false,
                     isReviewer: true,
-                    isViewedByUser: true,
+                    isViewedByUser: false,
                     isApproved: true,
                     isApprovedByUser: true,
                     getApprovesCount: 2,
-                    getReviewersCommentsCount: 2,
-                    getAuthorCommentsCount: 1,
-                    isAllApproved: true,
+                    getTotalDiscussionsCount: 1,
+                    getActiveDiscussionsCount: 0,
                     getPRUrl: 'https://gitlab.com/NotAlexWhiteCorp-1/project-2/-/merge_requests/2',
                     getPRId: 2,
                     getPRTitle: 'Merge Request 2 Title',
                     getPRLastUpdate: '2022-07-24T11:11:49Z',
+                    isNeedAttention: true,
                 }
             }
         ]
@@ -156,9 +272,6 @@ describe(`Check logic between API client and displaying data on UI (repositories
 
                     it('Organization model should contains web url', async () => {
                         expect(org.getUrl()).toBe(test.expected.getOrgUrl)
-                    })
-                    it('Repository model should contains owner login', () => {
-                        expect(repository.getOwner()).toBe(test.expected.getOwner)
                     })
                     it('Repository model should contains it\'s name', () => {
                         expect(repository.getName()).toBe(test.expected.getName)
@@ -195,11 +308,11 @@ describe(`Check logic between API client and displaying data on UI (repositories
                         it('Check PullRequest::getApprovesCount should return total approves count', () => {
                             expect(pullRequest.getApprovesCount()).toBe(test.expected.getApprovesCount)
                         })
-                        it('Check PullRequest::getAuthorCommentsCount should return only this user comments count', () => {
-                            expect(pullRequest.getAuthorCommentsCount(pullRequest.getAuthor().getUsername())).toBe(test.expected.getAuthorCommentsCount)
+                        it('Check PullRequest::getTotalDiscussionsCount should return all discussions count', () => {
+                            expect(pullRequest.getTotalDiscussionsCount()).toBe(test.expected.getTotalDiscussionsCount)
                         })
-                        it('Check PullRequest::getReviewersCommentsCount should return all users comments count excluding PR author comments', () => {
-                            expect(pullRequest.getReviewersCommentsCount()).toBe(test.expected.getReviewersCommentsCount)
+                        it('Check PullRequest::getActiveDiscussionsCount should return count of resolved discussions or discussions which last comment author is PR\'s author', () => {
+                            expect(pullRequest.getActiveDiscussionsCount()).toBe(test.expected.getActiveDiscussionsCount)
                         })
                         it('PullRequest model should contains web url', () => {
                             expect(pullRequest.getUrl()).toBe(test.expected.getPRUrl)
@@ -215,8 +328,8 @@ describe(`Check logic between API client and displaying data on UI (repositories
                         })
                     }
 
-                    it('isAllApproved should return true if all PRs are approved or viewed by local user', () => {
-                        expect(isAllApproved([org])).toBe(test.expected.isAllApproved)
+                    it('isNeedAttention should return true if all PRs are approved or viewed by local user', () => {
+                        expect(isNeedAttention([org])).toBe(test.expected.isNeedAttention)
                     })
                 })
             }
