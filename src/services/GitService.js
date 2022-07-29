@@ -1,9 +1,11 @@
 /* eslint-disable */
 
 import {OrganizationConfig} from "@/models/Config.model";
-import {GitOrganization} from "@/models/Git.model";
+import {GitOrganization, GitUser} from "@/models/Git.model";
 
 export default class GitService {
+
+    getSelfUser(): GitUser {}
 
     async getOrganization(orgInfo: OrganizationConfig): GitOrganization {}
 
