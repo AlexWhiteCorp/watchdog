@@ -37,7 +37,6 @@ async function createWindow() {
     width: 600,
     height: 500,
     webPreferences: {
-      backgroundThrottling: false,
       devTools: isDevelopment,
       nodeIntegration: true,
       contextIsolation: false,
