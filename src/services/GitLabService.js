@@ -22,11 +22,15 @@ class GitLabService extends GitService {
     }
 
     async getOrganization(orgInfo: GitLabOrganizationConfig): GitOrganization {
-        const groups = await Promise.all(
-            orgInfo.groups.map(group => this.fetchGroup(orgInfo.organization, group))
-        )
+        if (this.authUser) {
+            const groups = await Promise.all(
+                orgInfo.groups.map(group => this.fetchGroup(orgInfo.organization, group))
+            )
 
-        return new GitOrganization(orgInfo.organization, this.authUser, this.host, groups)
+            return new GitOrganization(orgInfo.organization, this.authUser, this.host, groups)
+        } else {
+            return new GitOrganization(orgInfo.organization, null, null, [], true)
+        }
     }
 
     async fetchGroup(organization: string, group: GitLabGroupConfig): RepositoriesGroup {

@@ -21,11 +21,15 @@ class GitHubService extends GitService{
     }
 
     async getOrganization(orgInfo: GitHubOrganizationConfig): GitOrganization {
-        const groups = await Promise.all(
-            orgInfo.groups.map(group => this.fetchGroup(orgInfo.organization, group))
-        )
+        if(this.authUser) {
+            const groups = await Promise.all(
+                orgInfo.groups.map(group => this.fetchGroup(orgInfo.organization, group))
+            )
 
-        return new GitOrganization(orgInfo.organization, this.authUser, GIT_HUB_URL, groups)
+            return new GitOrganization(orgInfo.organization, this.authUser, GIT_HUB_URL, groups)
+        } else {
+            return new GitOrganization(orgInfo.organization, null, null, [], true)
+        }
     }
 
     async fetchGroup(organization: string, group: GitHubGroupConfig): RepositoriesGroup {
