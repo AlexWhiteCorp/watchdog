@@ -2,6 +2,8 @@ import GitLabService from "@/services/GitLabService";
 import {isNeedAttention} from "@/utils/gitUtils";
 import {GitUser} from "@/models/Git.model";
 import GitHubService from "@/services/GitHubService";
+import ModelMapper from "@/utils/ModelMapper";
+import {GIT_LAB, OrganizationConfig} from "@/models/Config.model";
 
 const GITHUB_ORG_INFO_TEMPLATE = {
     organization: 'AlexWhiteCorp',
@@ -18,7 +20,7 @@ const GITLAB_ORG_INFO_TEMPLATE = {
     organization: 'AlexWhiteCorp',
     groups: [
         {
-            repositories: [
+            projects: [
                 'project-1'
             ]
         }
@@ -142,7 +144,10 @@ const PRESET = [
             {
                 errorFromClient: true,
                 description: 'Project not found or Bad Request/Network Error',
-                orgInfo: GITLAB_ORG_INFO_TEMPLATE,
+                orgInfo: {
+                    ...GITLAB_ORG_INFO_TEMPLATE,
+                    type: GIT_LAB
+                },
                 expected: {
                     getOrgUrl: 'https://gitlab.com/AlexWhiteCorp',
 
@@ -156,7 +161,10 @@ const PRESET = [
             {
                 description: 'Project contains Local user Merge Request(new)',
                 mockJson: 'AuthorUserNewMR',
-                orgInfo: GITLAB_ORG_INFO_TEMPLATE,
+                orgInfo: {
+                    ...GITLAB_ORG_INFO_TEMPLATE,
+                    type: GIT_LAB
+                },
                 expected: {
                     getOrgUrl: 'https://gitlab.com/AlexWhiteCorp',
 
@@ -185,6 +193,7 @@ const PRESET = [
                 mockJson: 'AnotherUserReviewedMR',
                 orgInfo: {
                     ...GITLAB_ORG_INFO_TEMPLATE,
+                    type: GIT_LAB,
                     organization: 'NotAlexWhiteCorp-1'
                 },
                 expected: {
@@ -215,6 +224,7 @@ const PRESET = [
                 mockJson: 'AnotherUserApprovedMR',
                 orgInfo: {
                     ...GITLAB_ORG_INFO_TEMPLATE,
+                    type: GIT_LAB,
                     organization: 'NotAlexWhiteCorp-1'
                 },
                 expected: {
@@ -249,6 +259,7 @@ describe(`Check logic between API client and displaying data on UI (repositories
         describe(`Check implementation for ${preset.service}`, () => {
             for (const test of preset.tests) {
                 describe(test.description, () => {
+                    const orgConfig = ModelMapper.map(test.orgInfo, OrganizationConfig)
                     let org, repository, pullRequest
 
                     beforeAll(async () => {
@@ -265,7 +276,7 @@ describe(`Check logic between API client and displaying data on UI (repositories
                             service.client.api.post = () => Promise.reject(new Error())
                         }
 
-                        org = await service.getOrganization(test.orgInfo)
+                        org = await service.getOrganization(orgConfig)
                         repository = org.groups[0].repositories[0]
                         pullRequest = repository.getPullRequests()[0]
                     })
