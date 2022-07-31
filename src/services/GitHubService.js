@@ -2,7 +2,7 @@ import GitHubClient from "@/clients/GitHubClient";
 import GitService from "@/services/GitService";
 import {GitOrganization, RepositoriesGroup} from "@/models/Git.model";
 import {GHUser} from "@/models/GitHub.model";
-import {GroupConfig, OrganizationConfig} from "@/models/Config.model";
+import {GitHubGroupConfig, GitHubOrganizationConfig} from "@/models/Config.model";
 
 const GIT_HUB_API_URL = 'https://api.github.com'
 const GIT_HUB_URL = 'https://github.com'
@@ -20,7 +20,7 @@ class GitHubService extends GitService{
         return this.client.getSelfUser()
     }
 
-    async getOrganization(orgInfo): GitOrganization {
+    async getOrganization(orgInfo: GitHubOrganizationConfig): GitOrganization {
         if (this.authUser) {
             const repos = await Promise.all(
                 orgInfo.groups.map(reposGroup =>
@@ -32,11 +32,11 @@ class GitHubService extends GitService{
 
             return new GitOrganization(orgInfo.organization, this.authUser, GIT_HUB_URL, groups)
         } else {
-            return new GitOrganization(orgInfo.organization, null, null, true)
+            return new GitOrganization(orgInfo.organization, null, null, [], true)
         }
     }
 
-    async getRepos(organization:OrganizationConfig, reposGroup: GroupConfig) {
+    async getRepos(organization:string, reposGroup: GitHubGroupConfig) {
         return Promise.all(
             reposGroup.repositories.map(repoName => this.#fetchRepo(organization, repoName, reposGroup.fetchPRs))
         )

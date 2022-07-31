@@ -1,10 +1,10 @@
 import GitService from "@/services/GitService";
 import {GitOrganization, RepositoriesGroup} from "@/models/Git.model";
-import {GroupConfig, OrganizationConfig} from "@/models/Config.model";
+import {GitLabGroupConfig, GitLabOrganizationConfig} from "@/models/Config.model";
 import GitLabClient from "@/clients/GitLabClient";
 import {GLUser} from "@/models/GitLab.model";
 
-const GIT_LAB_API_URL = 'https://gitlab.com'
+    const GIT_LAB_API_URL = 'https://gitlab.com'
 
 class GitLabService extends GitService {
 
@@ -21,7 +21,7 @@ class GitLabService extends GitService {
         return this.client.getSelfUser()
     }
 
-    async getOrganization(orgInfo: OrganizationConfig): GitOrganization {
+    async getOrganization(orgInfo: GitLabOrganizationConfig): GitOrganization {
         const groups = await Promise.all(
             orgInfo.groups.map(group => this.fetchGroup(orgInfo.organization, group))
         )
@@ -29,13 +29,13 @@ class GitLabService extends GitService {
         return new GitOrganization(orgInfo.organization, this.authUser, this.host, groups)
     }
 
-    async fetchGroup(organization: string, group: GroupConfig): RepositoriesGroup {
+    async fetchGroup(organization: string, group: GitLabGroupConfig): RepositoriesGroup {
         let owner = group.subGroupName
             ? `${organization}/${group.subGroupName}`
             : organization
 
         const repositories = await Promise.all(
-            group.repositories.map(repo => this.client.getProject(`${owner}/${repo}`))
+            group.projects.map(repo => this.client.getProject(`${owner}/${repo}`))
         )
 
         return new RepositoriesGroup(repositories)
