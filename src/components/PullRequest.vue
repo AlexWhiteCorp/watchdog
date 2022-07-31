@@ -1,13 +1,13 @@
 <template>
   <div class="pr-wrapper">
     <div class="pr-title">
-      <span v-if="isApprovedByUser" title="you have approved this PR">✓</span>
-      <span v-else-if="isViewedByUser" title="you have reviewed this PR without approve">👁</span>
-      {{pr.getTitle()}} ({{pr.getAuthor().getUsername()}})
+      <span v-if="isApprovedByUser" title="you have approved this PR">✓ </span>
+      <span v-else-if="isViewedByUser" title="you have reviewed this PR without approve">👁 </span>
+      <span style="word-break: break-all">{{pr.getTitle()}}</span> <span style="white-space: nowrap">({{pr.getAuthor().getUsername()}})</span>
     </div>
     <div class="pr-info">
       <div class="pr-reviews" title="total approves">{{totalApproves}} ✓</div>
-      <div class="pr-comments" title="PR author comments/reviewers comments">{{authorCommentsCount}}/{{reviewersCommentsCount}} 💬</div>
+      <div class="pr-comments" title="active discussions/total discussions">{{notActiveDiscussionsCount}}/{{totalDiscussionsCount}} 💬</div>
       <div class="pr-update" title="last update">{{lastUpdate}}</div>
     </div>
   </div>
@@ -33,11 +33,11 @@ export default {
     totalApproves: function () {
       return this.pr.getApprovesCount()
     },
-    authorCommentsCount: function() {
-      return this.pr.getAuthorCommentsCount(this.pr.getAuthor().getUsername())
+    notActiveDiscussionsCount: function() {
+      return this.pr.getTotalDiscussionsCount() - this.pr.getActiveDiscussionsCount()
     },
-    reviewersCommentsCount: function() {
-      return this.pr.getReviewersCommentsCount(this.pr.getAuthor().getUsername())
+    totalDiscussionsCount: function() {
+      return this.pr.getTotalDiscussionsCount()
     },
     lastUpdate: function () {
       return dateFormatted(this.pr.getLastUpdate())
@@ -50,7 +50,7 @@ export default {
 }
 
 .pr-title{
-  word-break: break-all;
+  display: inline;
 }
 
 .pr-info {

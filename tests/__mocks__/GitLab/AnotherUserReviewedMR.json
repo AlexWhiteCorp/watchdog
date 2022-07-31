@@ -71,6 +71,24 @@
                   },
                   {
                     "node": {
+                      "resolved": true,
+                      "notes": {
+                        "edges": [
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Suggestion comment",
+                              "author": {
+                                "username": "AlexWhiteCorp"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "node": {
                       "resolved": false,
                       "notes": {
                         "edges": [
@@ -80,6 +98,42 @@
                               "body": "Review comment",
                               "author": {
                                 "username": "AlexWhiteCorp"
+                              }
+                            }
+                          },
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Answer comment",
+                              "author": {
+                                "username": "NotAlexWhiteCorp-1"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "node": {
+                      "resolved": false,
+                      "notes": {
+                        "edges": [
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Review comment",
+                              "author": {
+                                "username": "AlexWhiteCorp"
+                              }
+                            }
+                          },
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Answer comment",
+                              "author": {
+                                "username": "NotAlexWhiteCorp-1"
                               }
                             }
                           },

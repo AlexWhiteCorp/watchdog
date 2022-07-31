@@ -1,0 +1,44 @@
+{
+  "data": {
+    "repository": {
+      "name": "repository-1",
+      "owner": {
+        "login": "AlexWhiteCorp"
+      },
+      "url": "https://github.com/AlexWhiteCorp/repository-1",
+      "pullRequests": {
+        "edges": [
+          {
+            "node": {
+              "number": 1,
+              "title": "Pull Request Title",
+              "url": "https://github.com/AlexWhiteCorp/repository-1/pull/1",
+              "isDraft": false,
+              "updatedAt": "2022-07-28T20:06:01Z",
+              "author": {
+                "login": "AlexWhiteCorp"
+              },
+              "reviewThreads": {
+                "edges": []
+              },
+              "reviewRequests": {
+                "edges": [
+                  {
+                    "node": {
+                      "requestedReviewer": {
+                        "login": "NotAlexWhiteCorp-1"
+                      }
+                    }
+                  }
+                ]
+              },
+              "reviews": {
+                "edges": []
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
