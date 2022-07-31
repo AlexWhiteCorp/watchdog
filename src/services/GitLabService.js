@@ -4,7 +4,7 @@ import {GitLabGroupConfig, GitLabOrganizationConfig} from "@/models/Config.model
 import GitLabClient from "@/clients/GitLabClient";
 import {GLUser} from "@/models/GitLab.model";
 
-    const GIT_LAB_API_URL = 'https://gitlab.com'
+const GIT_LAB_API_URL = 'https://gitlab.com'
 
 class GitLabService extends GitService {
 
