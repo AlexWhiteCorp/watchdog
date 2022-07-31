@@ -7,7 +7,7 @@
     </div>
     <div class="pr-info">
       <div class="pr-reviews" title="total approves">{{totalApproves}} ✓</div>
-      <div class="pr-comments" title="active discussions/total discussions">{{notActiveDiscussionsCount}}/{{totalDiscussionsCount}} 💬</div>
+      <div class="pr-comments" title="resolved discussions/total discussions">{{notActiveDiscussionsCount}}/{{totalDiscussionsCount}} 💬</div>
       <div class="pr-update" title="last update">{{lastUpdate}}</div>
     </div>
   </div>
