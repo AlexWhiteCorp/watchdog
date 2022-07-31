@@ -1,6 +1,7 @@
 # WatchDog
-Tool for GitHub to keep repositories you are interested in 
-and their pull requests in one place and up-to-date. 
+Tool for GitHub/GitLab to keep 
+Repositories/Projects you are interested in 
+and their Pull/Merge Requests in desktop Tray Menu.  
 More info in User Guide.
 
 ## User Guide
