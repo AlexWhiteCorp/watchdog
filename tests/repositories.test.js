@@ -3,7 +3,7 @@ import {isNeedAttention} from "@/utils/gitUtils";
 import {GitUser} from "@/models/Git.model";
 import GitHubService from "@/services/GitHubService";
 import ModelMapper from "@/utils/ModelMapper";
-import {GIT_LAB, OrganizationConfig} from "@/models/Config.model";
+import {GIT_HUB, GIT_LAB, OrganizationConfig} from "@/models/Config.model";
 
 const GITHUB_ORG_INFO_TEMPLATE = {
     organization: 'AlexWhiteCorp',
@@ -17,6 +17,7 @@ const GITHUB_ORG_INFO_TEMPLATE = {
 }
 
 const GITLAB_ORG_INFO_TEMPLATE = {
+    type: GIT_LAB,
     organization: 'AlexWhiteCorp',
     groups: [
         {
@@ -79,6 +80,7 @@ const PRESET = [
                 mockJson: 'AnotherUserReviewedPR',
                 orgInfo: {
                     ...GITHUB_ORG_INFO_TEMPLATE,
+                    type: GIT_HUB,
                     organization: 'NotAlexWhiteCorp-1'
                 },
                 expected: {
@@ -144,10 +146,7 @@ const PRESET = [
             {
                 errorFromClient: true,
                 description: 'Project not found or Bad Request/Network Error',
-                orgInfo: {
-                    ...GITLAB_ORG_INFO_TEMPLATE,
-                    type: GIT_LAB
-                },
+                orgInfo: GITLAB_ORG_INFO_TEMPLATE,
                 expected: {
                     getOrgUrl: 'https://gitlab.com/AlexWhiteCorp',
 
@@ -161,10 +160,7 @@ const PRESET = [
             {
                 description: 'Project contains Local user Merge Request(new)',
                 mockJson: 'AuthorUserNewMR',
-                orgInfo: {
-                    ...GITLAB_ORG_INFO_TEMPLATE,
-                    type: GIT_LAB
-                },
+                orgInfo: GITLAB_ORG_INFO_TEMPLATE,
                 expected: {
                     getOrgUrl: 'https://gitlab.com/AlexWhiteCorp',
 
@@ -193,7 +189,6 @@ const PRESET = [
                 mockJson: 'AnotherUserReviewedMR',
                 orgInfo: {
                     ...GITLAB_ORG_INFO_TEMPLATE,
-                    type: GIT_LAB,
                     organization: 'NotAlexWhiteCorp-1'
                 },
                 expected: {
@@ -224,7 +219,6 @@ const PRESET = [
                 mockJson: 'AnotherUserApprovedMR',
                 orgInfo: {
                     ...GITLAB_ORG_INFO_TEMPLATE,
-                    type: GIT_LAB,
                     organization: 'NotAlexWhiteCorp-1'
                 },
                 expected: {
