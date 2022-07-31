@@ -1,7 +1,32 @@
 import {GLComment, GLDiscussion, GLMergeRequest, GLProject, GLUser} from "@/models/GitLab.model";
 import {GHComment, GHDiscussion, GHPullRequest, GHRepo, GHReview, GHUser} from "@/models/GitHub.model";
+import {
+    GIT_HUB,
+    GIT_LAB, GitHubGroupConfig,
+    GitHubOrganizationConfig, GitLabGroupConfig,
+    GitLabOrganizationConfig,
+    OrganizationConfig
+} from "@/models/Config.model";
 
 const schema = {
+    [OrganizationConfig.name]: (json, obj: OrganizationConfig) => {
+        switch (obj.type) {
+            case GIT_LAB:
+                return map(json, GitLabOrganizationConfig)
+
+            case GIT_HUB:
+            default:
+                return map(json, GitHubOrganizationConfig)
+        }
+    },
+    [GitHubOrganizationConfig.name]: (json, obj: GitHubOrganizationConfig) => {
+        obj.groups = json.groups.map(group => map(group, GitHubGroupConfig))
+        return obj
+    },
+    [GitLabOrganizationConfig.name]: (json, obj: GitLabOrganizationConfig) => {
+        obj.groups = json.groups.map(group => map(group, GitLabGroupConfig))
+        return obj
+    },
     [GHRepo.name]: (json, obj: GHRepo) => {
         obj.pullRequests = json.pullRequests.edges
             .map(pr => map(pr.node, GHPullRequest))

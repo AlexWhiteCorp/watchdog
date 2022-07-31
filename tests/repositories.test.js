@@ -2,6 +2,8 @@ import GitLabService from "@/services/GitLabService";
 import {isNeedAttention} from "@/utils/gitUtils";
 import {GitUser} from "@/models/Git.model";
 import GitHubService from "@/services/GitHubService";
+import ModelMapper from "@/utils/ModelMapper";
+import {GIT_HUB, GIT_LAB, OrganizationConfig} from "@/models/Config.model";
 
 const GITHUB_ORG_INFO_TEMPLATE = {
     organization: 'AlexWhiteCorp',
@@ -15,10 +17,11 @@ const GITHUB_ORG_INFO_TEMPLATE = {
 }
 
 const GITLAB_ORG_INFO_TEMPLATE = {
+    type: GIT_LAB,
     organization: 'AlexWhiteCorp',
     groups: [
         {
-            repositories: [
+            projects: [
                 'project-1'
             ]
         }
@@ -77,6 +80,7 @@ const PRESET = [
                 mockJson: 'AnotherUserReviewedPR',
                 orgInfo: {
                     ...GITHUB_ORG_INFO_TEMPLATE,
+                    type: GIT_HUB,
                     organization: 'NotAlexWhiteCorp-1'
                 },
                 expected: {
@@ -249,6 +253,7 @@ describe(`Check logic between API client and displaying data on UI (repositories
         describe(`Check implementation for ${preset.service}`, () => {
             for (const test of preset.tests) {
                 describe(test.description, () => {
+                    const orgConfig = ModelMapper.map(test.orgInfo, OrganizationConfig)
                     let org, repository, pullRequest
 
                     beforeAll(async () => {
@@ -265,7 +270,7 @@ describe(`Check logic between API client and displaying data on UI (repositories
                             service.client.api.post = () => Promise.reject(new Error())
                         }
 
-                        org = await service.getOrganization(test.orgInfo)
+                        org = await service.getOrganization(orgConfig)
                         repository = org.groups[0].repositories[0]
                         pullRequest = repository.getPullRequests()[0]
                     })
