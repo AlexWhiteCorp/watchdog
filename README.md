@@ -1,8 +1,7 @@
 # WatchDog
 Tool for GitHub/GitLab to keep 
 Repositories/Projects you are interested in 
-and their Pull/Merge Requests in desktop Tray Menu.  
-More info in User Guide.
+and their Pull/Merge Requests in desktop Tray Menu. More info in User Guide.
 
 ## User Guide
 https://alexwhitecorp.github.io/watchdog
