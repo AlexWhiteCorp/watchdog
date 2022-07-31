@@ -3,7 +3,7 @@ import ApiClient from "@/clients/ApiClient";
 class UpdatesClient extends ApiClient {
 
     constructor(apiUrl) {
-        super(UpdatesClient, '', apiUrl);
+        super(UpdatesClient, null, apiUrl);
     }
 
     getLastVersions() {

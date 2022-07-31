@@ -2,13 +2,13 @@ import axios from "axios";
 
 class ApiClient {
 
-    constructor(clientClass, authHeader, baseUrl) {
+    constructor(clientClass, authHeader, baseUrl, headers) {
+        const configHeaders = { ...headers }
+        if(authHeader) configHeaders['Authorization'] = authHeader
+
         this.api = axios.create({
             baseURL: baseUrl,
-            headers: {
-                'Authorization': authHeader,
-                'Content-Type': 'application/json'
-            },
+            headers: configHeaders,
             timeout: 10000
         })
 
