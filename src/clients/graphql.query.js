@@ -14,7 +14,7 @@ export const GITHUB_REPOSITORY_QUERY = `
         owner {
           login
         }
-        pullRequests(states: [OPEN], first: 100){
+        pullRequests(states: [OPEN], first: 10){
           edges {
             node {
               number
@@ -25,7 +25,7 @@ export const GITHUB_REPOSITORY_QUERY = `
               author {
                 login
               }
-              reviewRequests(first: 100) {
+              reviewRequests(first: 20) {
                 edges {
                   node {
                     requestedReviewer {
