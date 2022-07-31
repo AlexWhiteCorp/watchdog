@@ -1,6 +1,11 @@
 import GitLabService from "@/services/GitLabService";
+import GitHubService from "@/services/GitHubService";
 
 const PRESET = [
+    {
+        service: 'GitHub',
+        serviceClass: GitHubService
+    },
     {
         service: 'GitLab',
         serviceClass: GitLabService

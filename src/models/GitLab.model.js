@@ -1,4 +1,4 @@
-import {GitPullRequest, GitRepository, GitReview, GitUser} from "@/models/Git.model";
+import {GitComment, GitDiscussion, GitPullRequest, GitRepository, GitReview, GitUser} from "@/models/Git.model";
 
 export class GLUser extends GitUser {
 
@@ -16,10 +16,6 @@ export class GLProject extends GitRepository {
     webUrl: string
     author: GLUser
     mergeRequests: GLMergeRequest[] = []
-
-    getOwner(): string {
-        return this.fullPath.split('/')[0];
-    }
 
     getName(): string {
         const names = this.fullPath.split('/')
@@ -60,30 +56,8 @@ export class GLMergeRequest extends GitPullRequest{
             .length !== 0
     }
 
-    isViewedByUser(localUser): boolean {
-        const prAuthor = this.getAuthor().getUsername()
-        if (prAuthor === localUser) {
-            return false
-        }
-
-        const prAuthorComments = this.getAuthorCommentsCount(prAuthor)
-        const reviewersComments = this.getReviewersCommentsCount()
-
-        return reviewersComments !== 0 && prAuthorComments < reviewersComments
-    }
-
     getApprovesCount(): number {
         return this.approvedBy.length
-    }
-
-    getReviewersCommentsCount(): number {
-        return this.discussions.length - this.getAuthorCommentsCount(this.getAuthor().getUsername())
-    }
-
-    getAuthorCommentsCount(login): number {
-        return this.discussions
-            .filter(discus => discus.getAuthor().getUsername() === login)
-            .length
     }
 
     getLastUpdate() {
@@ -113,11 +87,33 @@ export class GLMergeRequest extends GitPullRequest{
     getReviews(): GitReview[] {
         return this.discussions
     }
+
+    getDiscussions(): GLDiscussion[] {
+        return this.discussions
+    }
 }
 
-export class GLDiscussion extends GitReview {
+export class GLDiscussion extends GitDiscussion {
 
     resolved: boolean
+    notes: GLComment[]
+
+    isThreadResolved(): boolean {
+        return this.resolved
+    }
+
+    getComments(): GitComment[] {
+        return this.notes
+    }
+
+    getLastCommentAuthor(): GLUser {
+        return this.notes[this.notes.length - 1].getAuthor()
+    }
+}
+
+export class GLComment extends GitComment {
+
+    system: boolean
     author: GLUser
 
     getAuthor(): GitUser {

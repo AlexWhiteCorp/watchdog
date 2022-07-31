@@ -11,7 +11,7 @@ class GitLabClient extends ApiClient {
         super(GitLabClient, 'Bearer ' + authToken, baseUrl);
     }
 
-    getSelfUser() {
+    getSelfUser(): GLUser {
         const payload = {
             query: GITLAB_CURRENT_USER_QUERY
         }
@@ -21,7 +21,7 @@ class GitLabClient extends ApiClient {
             .then(response => ModelMapper.map(response.data.data.currentUser, GLUser))
     }
 
-    getProject(fullPath: string) {
+    getProject(fullPath: string): GLProject {
         const payload = {
             query: GITLAB_PROJECT_QUERY,
             variables: {

@@ -48,9 +48,9 @@ export class GitRepository {
         return this.notFound
     }
 
-    getOwner(): string {}
     getName(): string {}
     getUrl(): string {}
+    getAuthor(): GitUser {}
     getPullRequests(): GitPullRequest[] {}
 }
 
@@ -76,13 +76,32 @@ export class GitPullRequest {
         return isReviewed;
     }
 
-    isViewedByUser(localUser): boolean {}
+    isViewedByUser(localUser): boolean {
+        const prAuthor = this.getAuthor().getUsername()
+        if (prAuthor === localUser) {
+            return false
+        }
+
+        return this.getDiscussions()
+            .filter(discus => discus.getLastCommentAuthor().getUsername() === localUser)
+            .filter(discus => !discus.isThreadResolved())
+            .length !== 0
+    }
+
+    getTotalDiscussionsCount(): number {
+        return this.getDiscussions().length
+    }
+
+    getActiveDiscussionsCount(): number {
+        return this.getDiscussions()
+            .filter(discus => !discus.isThreadResolved())
+            .filter(discus => discus.getLastCommentAuthor().getUsername() !== this.getAuthor().getUsername())
+            .length
+    }
 
     isApproved(): boolean {}
     isApprovedByUser(login): boolean {}
     getApprovesCount(): number {}
-    getReviewersCommentsCount(authorLogin): number {}
-    getAuthorCommentsCount(authorLogin): number {}
 
     getId() {}
     getTitle() {}
@@ -91,12 +110,26 @@ export class GitPullRequest {
     getAuthor() {}
     getRequestedReviewers(): GitUser[] {}
     getReviews(): GitReview[] {}
+    getDiscussions(): GitDiscussion[] {}
 }
 
 export class GitReview {
 
-    getAuthor(): GitUser {}
     isApproveReview(): boolean {}
     isComment(): boolean {}
+
+}
+
+export class GitDiscussion {
+
+    isThreadResolved(): boolean {}
+    getComments(): GitComment[] {}
+    getLastCommentAuthor(): GitUser {}
+
+}
+
+export class GitComment {
+
+    getAuthor(): GitUser {}
 
 }

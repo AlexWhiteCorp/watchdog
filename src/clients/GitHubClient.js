@@ -1,43 +1,45 @@
-import {GHPullRequest, GHRepo, GHReview, GHUser} from "@/models/GitHub.model";
+import {GHRepo, GHUser} from "@/models/GitHub.model";
 import ApiClient from "@/clients/ApiClient";
-import {OrganizationConfig} from "@/models/Config.model";
+import {GITHUB_CURRENT_USER_QUERY, GITHUB_REPOSITORY_QUERY} from "@/clients/graphql.query";
+import ModelMapper from "@/utils/ModelMapper";
+
+const GRAPHQL_API_PATH = '/graphql'
 
 class GitHubClient extends ApiClient {
 
-    constructor(authToken: string, basePath: string) {
-        super(GitHubClient, 'token ' + authToken, basePath);
+    constructor(authToken: string, baseUrl: string) {
+        super(GitHubClient, 'token ' + authToken, baseUrl);
     }
 
-    getSelfUser() {
-        return this.api.get(`/user`)
-            .then(response => GHUser.of(response.data))
+    getSelfUser():GHUser {
+        const payload = {
+            query: GITHUB_CURRENT_USER_QUERY
+        }
+
+        return this.api
+            .post(GRAPHQL_API_PATH, payload)
+            .then(response => ModelMapper.map(response.data.data.viewer, GHUser))
     }
 
-    getRepoByName(organization: OrganizationConfig, repoName: string) {
-        return this.api.get(`/repos/${organization}/${repoName}`)
-            .then(response => GHRepo.of(response.data))
+    getRepository(owner: string, name: string):GHRepo {
+        const payload = {
+            query: GITHUB_REPOSITORY_QUERY,
+            variables: {
+                owner: owner,
+                name: name
+            }
+        }
+
+        return this.api
+            .post(GRAPHQL_API_PATH, payload)
+            .then(response => ModelMapper.map(response.data.data.repository, GHRepo))
             .catch((e) => {
                 console.log(e)
                 const repo = new GHRepo()
-                repo.full_name = organization + '/' + repoName
+                repo.name = name
                 repo.notFound = true
                 return repo
             })
-    }
-
-    getRepoPRs(organization: OrganizationConfig, repoName: string) {
-        return this.api.get(`/repos/${organization}/${repoName}/pulls`)
-            .then(response => response.data.map(pr => GHPullRequest.of(pr)))
-    }
-
-    getPullRequest(organization: OrganizationConfig, repoName: string, prNumber: number) {
-        return this.api.get(`/repos/${organization}/${repoName}/pulls/${prNumber}`)
-            .then(response => GHPullRequest.of(response.data))
-    }
-
-    getPullRequestReviews(organization: OrganizationConfig, repoName: string, prNumber: number) {
-        return this.api.get(`/repos/${organization}/${repoName}/pulls/${prNumber}/reviews`)
-            .then(response => response.data.map(review => GHReview.of(review)))
     }
 }
 
