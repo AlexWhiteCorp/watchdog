@@ -1,0 +1,161 @@
+{
+  "data": {
+    "project": {
+      "fullPath": "NotAlexWhiteCorp-1/project-2",
+      "webUrl": "https://gitlab.com/NotAlexWhiteCorp-1/project-2",
+      "mergeRequests": {
+        "edges": [
+          {
+            "node": {
+              "iid": 2,
+              "title": "Merge Request 2 Title",
+              "webUrl": "https://gitlab.com/NotAlexWhiteCorp-1/project-2/-/merge_requests/2",
+              "updatedAt": "2022-07-24T11:11:49Z",
+              "author": {
+                "username": "NotAlexWhiteCorp-1"
+              },
+              "reviewers": {
+                "edges": [
+                  {
+                    "node": {
+                      "username": "AlexWhiteCorp"
+                    }
+                  },
+                  {
+                    "node": {
+                      "username": "NotAlexWhiteCorp-2"
+                    }
+                  }
+                ]
+              },
+              "approvedBy": {
+                "edges": []
+              },
+              "discussions": {
+                "edges": [
+                  {
+                    "node": {
+                      "resolved": false,
+                      "notes": {
+                        "edges": [
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Single comment",
+                              "author": {
+                                "username": "AlexWhiteCorp"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "node": {
+                      "resolved": false,
+                      "notes": {
+                        "edges": [
+                          {
+                            "node": {
+                              "system": true,
+                              "body": "requested review from @AlexWhiteCorp",
+                              "author": {
+                                "username": "AlexWhiteCorp"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "node": {
+                      "resolved": true,
+                      "notes": {
+                        "edges": [
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Suggestion comment",
+                              "author": {
+                                "username": "AlexWhiteCorp"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "node": {
+                      "resolved": false,
+                      "notes": {
+                        "edges": [
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Review comment",
+                              "author": {
+                                "username": "AlexWhiteCorp"
+                              }
+                            }
+                          },
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Answer comment",
+                              "author": {
+                                "username": "NotAlexWhiteCorp-1"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "node": {
+                      "resolved": false,
+                      "notes": {
+                        "edges": [
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Review comment",
+                              "author": {
+                                "username": "AlexWhiteCorp"
+                              }
+                            }
+                          },
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Answer comment",
+                              "author": {
+                                "username": "NotAlexWhiteCorp-1"
+                              }
+                            }
+                          },
+                          {
+                            "node": {
+                              "system": false,
+                              "body": "Review comment 2",
+                              "author": {
+                                "username": "AlexWhiteCorp"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

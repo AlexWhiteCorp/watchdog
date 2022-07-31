@@ -13,6 +13,9 @@ window.logger = {
     info: (source, msg) => {
         ipcRenderer.send('log-info', [source, msg])
     },
+    error: (source, msg) => {
+        ipcRenderer.send('log-error', [source, msg])
+    },
 }
 
 window.getTrayPosition = async () => {

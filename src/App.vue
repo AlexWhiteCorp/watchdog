@@ -47,7 +47,7 @@ html, body {
 }
 
 .option-btn-icon {
-  height: 14px;
+  height: 12px;
   margin: auto;
 }
 </style>

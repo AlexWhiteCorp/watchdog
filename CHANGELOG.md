@@ -1,22 +1,15 @@
-# Release 1.0.1
+# Release 1.0.2
 
 ## New Functionality
 
-### Updates center
-When new version will be available you receive notification 
-and special icon appear in the top left corner.
-
-### Pause/Resume PRs fetching
-You can temporally pause/resume refreshing using button in the top right corner. 
-For example: on weekends to don't quit app at all.
+### GitLab support (Beta)
+Was added GitLab API support(GraphQL). Now you can use both GitHub and GitLab
 
 ## Fixes
-Minor fixes for Windows platform
-
-Menu reloading on new data fetched
-
-PRs filtering
+- Hide nav bar arrows if only one organization available
 
 ## Other 
 
-### Optimized number of API requests
+- Use GitHub GraphQL API to minimize number of API requests
+- Main business logic covered with tests
+- Run tests on push/merge action
