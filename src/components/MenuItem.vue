@@ -20,13 +20,16 @@ export default {
 </script>
 <style scoped>
 .menu-item-wrapper {
-  padding: 5px 15px;
+  padding: 5px 10px;
+  margin: 1px 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-
-  font-size: 14px;
+  font-size: 13px;
+  transition: background-color 0.08s ease-out, color 0.08s ease-out;
 }
 
 .menu-item-wrapper:hover {
-  background: var(--panel);
+  background: var(--bg-selected);
+  color: var(--fg-on-accent);
 }
 </style>

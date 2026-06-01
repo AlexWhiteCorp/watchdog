@@ -4,7 +4,7 @@
       <repo-item :organization="organization" :repo="repo"></repo-item>
     </template>
   </div>
-  <div v-else style="text-align: center">Loading repositories...</div>
+  <div v-else class="repos-group-empty">Loading repositories...</div>
 </template>
 
 <script>
@@ -24,6 +24,13 @@ export default {
 </script>
 <style scoped>
   .repos-group {
-    padding: 5px 0;
+    padding: 4px 0;
+  }
+
+  .repos-group-empty {
+    text-align: center;
+    color: var(--fg-secondary);
+    padding: 8px 12px;
+    font-size: 12px;
   }
 </style>

@@ -57,18 +57,24 @@ export default {
   display: grid;
   grid-template-columns: 35px 60px auto;
 
-  line-height: 30px;
+  line-height: 24px;
 }
 
-.pr-reviews{
+.pr-reviews {
   text-align: center;
+  color: var(--fg-secondary);
+  font-size: 12px;
 }
 
 .pr-comments {
   text-align: center;
+  color: var(--fg-secondary);
+  font-size: 12px;
 }
 
 .pr-update {
   white-space: nowrap;
+  color: var(--fg-secondary);
+  font-size: 12px;
 }
 </style>

@@ -41,8 +41,13 @@ export default {
   position: absolute;
   right: calc(100% - 10px);
   top: -5px;
-  background: var(--background);
   width: fit-content;
-  border: 1px solid var(--panel);
+  padding: 4px 0;
+  background: var(--bg-popover);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--separator);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-popover);
 }
 </style>

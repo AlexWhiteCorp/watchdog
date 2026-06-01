@@ -128,6 +128,7 @@ export default {
   grid-template-columns: 350px auto;
   grid-template-rows: max-content;
   grid-template-areas: "repo-info main-menu";
+  border-radius: var(--radius-lg);
 }
 
 .window-position-bottom {
@@ -137,7 +138,10 @@ export default {
 
 .main-menu {
   grid-area: main-menu;
-  background-color: var(--background);
+  background: var(--bg-canvas-highlight), var(--bg-canvas);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-popover);
+  overflow: hidden;
 }
 
 .menu-item-default {
@@ -145,7 +149,9 @@ export default {
 }
 
 .menu-item-quit {
-  font-size: 13px;
-  line-height: 13px
+  font-size: 12px;
+  line-height: 1;
+  padding: 8px 12px;
+  color: var(--fg-secondary);
 }
 </style>

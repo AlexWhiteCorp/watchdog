@@ -36,15 +36,17 @@ export default {
   display: grid;
   grid-template-columns: max-content auto 100px auto max-content;
   grid-template-areas: "options-left . title . options-right";
-  background: var(--panel);
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--separator);
 }
 
 .header-title {
   grid-area: title;
 
   text-align: center;
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.01em;
 }
 
 .header-options {
@@ -55,13 +57,13 @@ export default {
 
 .header-options-left {
   grid-area: options-left;
-  margin-left: 10px;
+  margin-left: 8px;
 }
 
 .header-options-right {
   grid-area: options-right;
   display: flex;
   flex-direction: row-reverse;
-  margin-right: 10px;
+  margin-right: 8px;
 }
 </style>

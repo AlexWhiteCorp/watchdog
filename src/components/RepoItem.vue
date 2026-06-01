@@ -77,18 +77,26 @@ export default {
   display: grid;
   grid-template-areas: "stat name .";
   grid-template-columns: 40px auto 40px;
-  padding: 2px 10px;
+  padding: 4px 10px;
+  margin: 1px 6px;
+  border-radius: var(--radius-md);
   cursor: default;
-
-  font-size: 14px;
+  font-size: 13px;
+  transition: background-color 0.08s ease-out, color 0.08s ease-out;
 }
 
 .menu-item-title-wrapper:hover {
-  background: var(--panel);
+  background: var(--bg-selected);
+  color: var(--fg-on-accent);
+}
+
+.menu-item-title-wrapper:hover .repo-stat {
+  color: var(--fg-on-accent);
 }
 
 .repo-stat {
   grid-area: stat;
+  color: var(--fg-secondary);
 }
 
 .repo-name {

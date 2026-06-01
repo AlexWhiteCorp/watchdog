@@ -69,13 +69,18 @@ export default {
 
 .nav-btn {
   cursor: pointer;
-
   text-align: center;
-  line-height: 33px;
+  line-height: 28px;
+  margin: 2px 4px;
+  border-radius: var(--radius-md);
+  color: var(--fg-secondary);
+  font-size: 14px;
+  transition: background-color 0.08s ease-out, color 0.08s ease-out;
 }
 
 .nav-btn:hover {
-  background: var(--panel);
+  background: var(--bg-hover);
+  color: var(--fg-primary);
 }
 
 .menu-navbar-prev {
@@ -91,7 +96,9 @@ export default {
 
 .menu-navbar-curr-org {
   grid-area: org;
-
   text-align: center;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: -0.01em;
 }
 </style>

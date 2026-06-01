@@ -9,9 +9,10 @@ export default {
 </script>
 <style scoped>
 .delimiter {
-  width: 100%;
+  width: auto;
+  margin: 4px 8px;
   min-height: 1px;
   max-height: 1px;
-  background: linear-gradient(to right, transparent, var(--main-font), transparent);;
+  background: var(--separator);
 }
 </style>
